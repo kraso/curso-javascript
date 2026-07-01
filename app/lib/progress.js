@@ -1,0 +1,125 @@
+import { supabase, isSupabaseConfigured } from "./supabase";
+
+const STORAGE_KEY = "curso-js-progress";
+
+// ===== LOCAL STORAGE =====
+
+export function getProgresoLocal() {
+  if (typeof window === "undefined") return { leccionesCompletadas: [], insignias: [], tiempoTotal: 0 };
+
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) {
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error("Error al leer progreso:", error);
+  }
+
+  return { leccionesCompletadas: [], insignias: [], tiempoTotal: 0 };
+}
+
+export function saveProgresoLocal(progreso) {
+  if (typeof window === "undefined") return;
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progreso));
+  } catch (error) {
+    console.error("Error al guardar progreso:", error);
+  }
+}
+
+// ===== SUPABASE SYNC =====
+
+export async function syncProgresoFromSupabase(userId) {
+  if (!isSupabaseConfigured() || !userId) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from("progreso_usuario")
+      .select("leccion_id, insignias, puntos, tiempo_total")
+      .eq("user_id", userId);
+
+    if (error) throw error;
+
+    const leccionesCompletadas = data.map((r) => r.leccion_id);
+    const insignias = [...new Set(data.flatMap((r) => r.insignias || []))];
+    const puntos = data.reduce((sum, r) => sum + (r.puntos || 0), 0);
+    const tiempoTotal = data.reduce((sum, r) => sum + (r.tiempo_total || 0), 0);
+
+    const progreso = { leccionesCompletadas, insignias, puntos, tiempoTotal };
+    saveProgresoLocal(progreso);
+    return progreso;
+  } catch (error) {
+    console.error("Error sync Supabase:", error);
+    return null;
+  }
+}
+
+export async function syncLeccionToSupabase(userId, leccionId, insignia) {
+  if (!isSupabaseConfigured() || !userId) return;
+
+  try {
+    const { error } = await supabase.from("progreso_usuario").upsert(
+      {
+        user_id: userId,
+        leccion_id: leccionId,
+        insignias: insignia ? [insignia] : [],
+        puntos: insignia ? 10 : 5,
+      },
+      { onConflict: "user_id,leccion_id" }
+    );
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error guardando en Supabase:", error);
+  }
+}
+
+// ===== MAIN FUNCTIONS =====
+
+export function marcarLeccionCompletada(leccionId, insignia, userId) {
+  const progreso = getProgresoLocal();
+
+  if (!progreso.leccionesCompletadas.includes(leccionId)) {
+    progreso.leccionesCompletadas.push(leccionId);
+  }
+
+  if (insignia && !progreso.insignias.includes(insignia)) {
+    progreso.insignias.push(insignia);
+  }
+
+  saveProgresoLocal(progreso);
+
+  if (userId) {
+    syncLeccionToSupabase(userId, leccionId, insignia);
+  }
+
+  return progreso;
+}
+
+export function estaLeccionCompletada(leccionId) {
+  const progreso = getProgresoLocal();
+  return progreso.leccionesCompletadas.includes(leccionId);
+}
+
+export function getInsignias() {
+  const progreso = getProgresoLocal();
+  return progreso.insignias;
+}
+
+export function getTiempoTotal() {
+  const progreso = getProgresoLocal();
+  return progreso.tiempoTotal;
+}
+
+export function actualizarTiempo(segundos) {
+  const progreso = getProgresoLocal();
+  progreso.tiempoTotal += segundos;
+  saveProgresoLocal(progreso);
+  return progreso.tiempoTotal;
+}
+
+export function reiniciarProgreso() {
+  saveProgresoLocal({ leccionesCompletadas: [], insignias: [], tiempoTotal: 0 });
+}
