@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "remix",
-  "buildCommand": "remix vite:build",
+  "buildCommand": "npx remix vite:build",
   "outputDirectory": "build"
 }
