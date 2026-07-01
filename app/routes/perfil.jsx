@@ -1,0 +1,282 @@
+import { useState, useRef } from "react";
+import { Link, useNavigate } from "@remix-run/react";
+import {
+  ArrowLeft, User, Mail, Save, BookOpen,
+  Trophy, Clock, AlertCircle, CheckCircle2, Camera
+} from "lucide-react";
+import SkipLink from "../components/SkipLink";
+import Button from "../components/ui/Button";
+import { useAuth } from "../hooks/useAuth";
+import { useProgress } from "../hooks/useProgress";
+import { supabase } from "../lib/supabase";
+
+export default function Perfil() {
+  const { user, loading } = useAuth();
+  const { progreso } = useProgress(user?.id);
+  const navigate = useNavigate();
+
+  const [nombre, setNombre] = useState(user?.user_metadata?.nombre || "");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef(null);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
+
+  const userName = user.user_metadata?.nombre || "Usuario";
+  const userInitial = userName.charAt(0).toUpperCase();
+  const totalLecciones = progreso?.leccionesCompletadas?.length || 0;
+  const totalInsignias = progreso?.insignias?.length || 0;
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      setError("La imagen no debe superar 2 MB");
+      return;
+    }
+
+    setUploadingAvatar(true);
+    setError(null);
+
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const publicUrl = urlData.publicUrl;
+
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: publicUrl },
+      });
+
+      if (updateError) throw updateError;
+
+      setAvatarUrl(publicUrl);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError("Error al subir imagen: " + err.message);
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    setSaved(false);
+
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { nombre },
+    });
+
+    if (updateError) {
+      setError(updateError.message);
+    } else {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }
+
+    setSaving(false);
+  };
+
+  return (
+    <div id="main-content" className="min-h-screen bg-dark-900 pt-20 pb-12">
+      <SkipLink />
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
+        <Link
+          to="/curso"
+          className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-100 text-sm mb-8 transition-colors"
+        >
+          <ArrowLeft size={16} />
+          Volver al curso
+        </Link>
+
+        {/* Profile header */}
+        <div className="bg-dark-800 rounded-2xl border border-zinc-700/50 p-6 sm:p-8 mb-6">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="relative group">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={userName}
+                  className="w-16 h-16 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-dark-900 font-bold text-2xl shrink-0">
+                  {userInitial}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                className="absolute inset-0 rounded-xl bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                aria-label="Cambiar avatar"
+              >
+                {uploadingAvatar ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Camera size={20} className="text-white" />
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleAvatarUpload}
+                className="hidden"
+              />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-zinc-100">{userName}</h1>
+              <p className="text-zinc-500 text-sm">{user.email}</p>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center p-4 rounded-xl bg-dark-700/50">
+              <BookOpen size={20} className="text-primary mx-auto mb-2" />
+              <p className="text-2xl font-bold text-zinc-100">{totalLecciones}</p>
+              <p className="text-xs text-zinc-500">Lecciones</p>
+            </div>
+            <div className="text-center p-4 rounded-xl bg-dark-700/50">
+              <Trophy size={20} className="text-primary mx-auto mb-2" />
+              <p className="text-2xl font-bold text-zinc-100">{totalInsignias}</p>
+              <p className="text-xs text-zinc-500">Insignias</p>
+            </div>
+            <div className="text-center p-4 rounded-xl bg-dark-700/50">
+              <Clock size={20} className="text-primary mx-auto mb-2" />
+              <p className="text-2xl font-bold text-zinc-100">
+                {progreso?.tiempoTotal ? Math.floor(progreso.tiempoTotal / 60) : 0}
+              </p>
+              <p className="text-xs text-zinc-500">Minutos</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Edit profile */}
+        <div className="bg-dark-800 rounded-2xl border border-zinc-700/50 p-6 sm:p-8">
+          <h2 className="text-lg font-semibold text-zinc-100 mb-6 flex items-center gap-2">
+            <User size={18} className="text-primary" />
+            Personalizar perfil
+          </h2>
+
+          <form onSubmit={handleSave} className="space-y-5">
+            {error && (
+              <div role="alert" className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                <AlertCircle size={16} />
+                {error}
+              </div>
+            )}
+
+            {saved && (
+              <div role="status" aria-live="polite" className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
+                <CheckCircle2 size={16} />
+                Perfil actualizado correctamente
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="nombre" className="block text-sm font-medium text-zinc-300 mb-2">
+                Nombre
+              </label>
+              <div className="relative">
+                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                <input
+                  id="nombre"
+                  type="text"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-dark-700 border border-zinc-600 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary transition-colors"
+                  placeholder="Tu nombre"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="email-perfil" className="block text-sm font-medium text-zinc-300 mb-2">
+                Email
+              </label>
+              <div className="relative">
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                <input
+                  id="email-perfil"
+                  type="email"
+                  value={user.email}
+                  disabled
+                  className="w-full pl-10 pr-4 py-3 bg-dark-700/50 border border-zinc-700 rounded-xl text-zinc-500 cursor-not-allowed"
+                />
+              </div>
+              <p className="text-xs text-zinc-600 mt-1">El email no se puede cambiar</p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button type="submit" disabled={saving} size="md">
+                {saving ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-dark-900 border-t-transparent rounded-full animate-spin" />
+                    Guardando...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Save size={16} />
+                    Guardar cambios
+                  </span>
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
+
+        {/* Insignias */}
+        {totalInsignias > 0 && (
+          <div className="bg-dark-800 rounded-2xl border border-zinc-700/50 p-6 sm:p-8 mt-6">
+            <h2 className="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
+              <Trophy size={18} className="text-primary" />
+              Insignias desbloqueadas
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {progreso.insignias.map((insignia) => (
+                <span
+                  key={insignia}
+                  className="px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary text-xs font-medium"
+                >
+                  {insignia.replace(/-/g, " ")}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
