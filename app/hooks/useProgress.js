@@ -20,11 +20,23 @@ export function useProgress(userId) {
     setProgreso(getProgresoLocal());
   }, []);
 
-  // Sync from Supabase when userId changes
+  // Sync from Supabase when userId changes — merge with localStorage
   useEffect(() => {
     if (userId) {
-      syncProgresoFromSupabase(userId).then((data) => {
-        if (data) setProgreso(data);
+      syncProgresoFromSupabase(userId).then((supabaseData) => {
+        if (!supabaseData) return;
+        setProgreso((local) => ({
+          leccionesCompletadas: [
+            ...new Set([
+              ...local.leccionesCompletadas,
+              ...supabaseData.leccionesCompletadas,
+            ]),
+          ],
+          insignias: [
+            ...new Set([...local.insignias, ...supabaseData.insignias]),
+          ],
+          tiempoTotal: Math.max(local.tiempoTotal, supabaseData.tiempoTotal),
+        }));
       });
     }
   }, [userId]);
