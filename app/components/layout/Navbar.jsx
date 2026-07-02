@@ -119,9 +119,17 @@ export default function Navbar() {
                   className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-dark-700/50 transition-colors group"
                 >
                   {/* Avatar */}
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-dark-900 font-bold text-sm shrink-0">
-                    {userInitial}
-                  </div>
+                  {user?.user_metadata?.avatar_url ? (
+                    <img
+                      src={user.user_metadata.avatar_url}
+                      alt={userName}
+                      className="w-8 h-8 rounded-lg object-cover shrink-0"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-dark-900 font-bold text-sm shrink-0">
+                      {userInitial}
+                    </div>
+                  )}
                   <div className="hidden lg:flex flex-col items-start">
                     <span className="text-sm font-medium text-zinc-200 leading-tight">
                       {userName}
@@ -145,9 +153,17 @@ export default function Navbar() {
                     {/* User info */}
                     <div className="px-4 py-3 border-b border-zinc-700/50">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-dark-900 font-bold text-base shrink-0">
-                          {userInitial}
-                        </div>
+                        {user?.user_metadata?.avatar_url ? (
+                          <img
+                            src={user.user_metadata.avatar_url}
+                            alt={userName}
+                            className="w-10 h-10 rounded-lg object-cover shrink-0"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-dark-900 font-bold text-base shrink-0">
+                            {userInitial}
+                          </div>
+                        )}
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-zinc-100 truncate">
                             {userName}
@@ -226,9 +242,17 @@ export default function Navbar() {
             {/* User info mobile */}
             {!loading && user && (
               <div className="flex items-center gap-3 px-4 py-3 mb-2">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-dark-900 font-bold text-base shrink-0">
-                  {userInitial}
-                </div>
+                {user?.user_metadata?.avatar_url ? (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt={userName}
+                    className="w-10 h-10 rounded-lg object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-dark-900 font-bold text-base shrink-0">
+                    {userInitial}
+                  </div>
+                )}
                 <div>
                   <p className="text-sm font-semibold text-zinc-100">{userName}</p>
                   <p className="text-xs text-zinc-500">{userEmail}</p>
