@@ -181,7 +181,7 @@ console.log(typeof 25);`,
       tests: [
         {
           descripcion: "Se usó console.log al menos 3 veces",
-          codigo: `(() => { let count = 0; const orig = console.log; console.log = function() { count++; orig.apply(console, arguments); }; eval(document.querySelector('[data-test-source]').textContent); console.log = orig; return count >= 3; })()`,
+          codigo: `__logs.length >= 3`,
         },
       ],
     },

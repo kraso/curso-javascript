@@ -49,7 +49,14 @@ export default function CodeEditor({ ejercicio, onResolver }) {
       try {
         const testResults = ejercicio.tests.map((test) => {
           try {
-            const wrappedCode = codigo + `\nreturn ${test.codigo};`;
+            const wrappedCode = `
+              var __logs = [];
+              var __origLog = console.log;
+              console.log = function() { __logs.push(Array.from(arguments).map(String).join(" ")); __origLog.apply(console, arguments); };
+              ${codigo}
+              console.log = __origLog;
+              return (function() { return ${test.codigo}; })();
+            `;
             const fn = new Function(wrappedCode);
             const pass = fn();
             return { ...test, pass: !!pass };
@@ -58,8 +65,6 @@ export default function CodeEditor({ ejercicio, onResolver }) {
             if (error instanceof TypeError) {
               if (error.message.includes("is not a function")) {
                 hint = "No se encontró la función. Asegúrate de que esté definida.";
-              } else if (error.message.includes("Cannot read propert")) {
-                hint = "console.log() no retorna valores (retorna undefined). Retorna el string directamente.";
               }
             }
             return { ...test, pass: false, error: error.message, hint };
