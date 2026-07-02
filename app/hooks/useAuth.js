@@ -75,7 +75,12 @@ export function useAuth() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options,
+        options: {
+          ...options,
+          emailRedirectTo: typeof window !== "undefined"
+            ? `${window.location.origin}/curso`
+            : undefined,
+        },
       });
       setLoading(false);
       if (error) {
