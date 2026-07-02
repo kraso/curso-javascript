@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "@remix-run/react";
 import {
   ArrowLeft, User, Mail, Save, BookOpen,
@@ -16,26 +16,37 @@ export default function Perfil() {
   const { progreso } = useProgress(user?.id);
   const navigate = useNavigate();
 
-  const [nombre, setNombre] = useState(user?.user_metadata?.nombre || "");
+  const [nombre, setNombre] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || null);
+  const [avatarUrl, setAvatarUrl] = useState(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Password change
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
   const [savedPassword, setSavedPassword] = useState(false);
   const [errorPassword, setErrorPassword] = useState(null);
 
-  // Email change
   const [newEmail, setNewEmail] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
   const [savedEmail, setSavedEmail] = useState(false);
   const [errorEmail, setErrorEmail] = useState(null);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
+
+  useEffect(() => {
+    if (user) {
+      setNombre(user.user_metadata?.nombre || "");
+      setAvatarUrl(user.user_metadata?.avatar_url || null);
+    }
+  }, [user]);
 
   if (loading) {
     return (
@@ -45,10 +56,7 @@ export default function Perfil() {
     );
   }
 
-  if (!user) {
-    navigate("/login");
-    return null;
-  }
+  if (!user) return null;
 
   const userName = user.user_metadata?.nombre || "Usuario";
   const userInitial = userName.charAt(0).toUpperCase();
