@@ -17,7 +17,6 @@ export const meta = () => {
     { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
     { name: "mobile-web-app-capable", content: "yes" },
     { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-    { charSet: "utf-8" },
     { name: "author", content: "Marcos Calabrés Ibáñez" },
     { name: "robots", content: "index, follow" },
     { name: "theme-color", content: "#0a0a0a" },
@@ -49,6 +48,7 @@ export default function App() {
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
+        <meta charSet="utf-8" />
         <Meta />
         <Links />
       </head>
