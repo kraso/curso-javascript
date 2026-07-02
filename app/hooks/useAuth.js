@@ -52,7 +52,7 @@ export function useAuth() {
     }
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options,
@@ -62,7 +62,7 @@ export function useAuth() {
       setError(error.message);
       return error.message;
     }
-    return null;
+    return { needsConfirmation: !data.session };
   }, []);
 
   const signOut = useCallback(async () => {

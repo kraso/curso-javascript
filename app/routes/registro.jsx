@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@remix-run/react";
-import { Code2, Mail, Lock, User, ArrowRight, AlertCircle } from "lucide-react";
+import { Link } from "@remix-run/react";
+import { Code2, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 import SkipLink from "../components/SkipLink";
 import Button from "../components/ui/Button";
 import { useAuth } from "../hooks/useAuth";
@@ -18,8 +18,8 @@ export default function Registro() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [registered, setRegistered] = useState(false);
   const { signUp, loading, error } = useAuth();
-  const navigate = useNavigate();
 
   const validar = () => {
     const newErrors = {};
@@ -33,11 +33,39 @@ export default function Registro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validar()) return;
-    const err = await signUp(email, password, { data: { nombre } });
-    if (!err) {
-      navigate("/curso");
+    const result = await signUp(email, password, { data: { nombre } });
+    if (typeof result === "object" && result !== null) {
+      if (result.needsConfirmation) {
+        setRegistered(true);
+      } else {
+        window.location.href = "/curso";
+      }
     }
   };
+
+  if (registered) {
+    return (
+      <div id="main-content" className="min-h-screen bg-dark-900 flex items-center justify-center gradient-bg dot-pattern px-4">
+        <SkipLink />
+        <div className="w-full max-w-md text-center">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 size={32} className="text-emerald-400" />
+          </div>
+          <h1 className="text-2xl font-bold text-zinc-100 mb-3">Revisa tu email</h1>
+          <p className="text-zinc-400 mb-8">
+            Hemos enviado un enlace de confirmación a <span className="text-zinc-200 font-medium">{email}</span>.
+            Haz clic en el enlace para activar tu cuenta.
+          </p>
+          <Link to="/login">
+            <Button size="lg">
+              Ir a iniciar sesión
+              <ArrowRight size={16} />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div id="main-content" className="min-h-screen bg-dark-900 flex items-center justify-center gradient-bg dot-pattern px-4">
