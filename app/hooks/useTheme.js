@@ -17,10 +17,13 @@ function applyTheme(theme) {
 }
 
 export function useTheme() {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") return "dark";
-    return getStoredTheme();
-  });
+  const [theme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    const stored = getStoredTheme();
+    setTheme(stored);
+    applyTheme(stored);
+  }, []);
 
   useEffect(() => {
     applyTheme(theme);
