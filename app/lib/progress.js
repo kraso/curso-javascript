@@ -76,6 +76,49 @@ export async function syncLeccionToSupabase(userId, leccionId, insignia) {
   }
 }
 
+// ===== MIGRATION: localStorage → Supabase =====
+
+export async function migrarProgresoLocalASupabase(userId) {
+  if (!isSupabaseConfigured() || !userId) return false;
+
+  try {
+    const local = getProgresoLocal();
+    if (!local.leccionesCompletadas.length) return false;
+
+    const { data: existing, error: checkErr } = await supabase
+      .from("progreso_usuario")
+      .select("leccion_id")
+      .eq("user_id", userId);
+
+    if (checkErr) throw checkErr;
+
+    const existingIds = new Set(existing.map((r) => r.leccion_id));
+    const toMigrate = local.leccionesCompletadas.filter((id) => !existingIds.has(id));
+
+    if (!toMigrate.length) return false;
+
+    const rows = toMigrate.map((leccionId) => ({
+      user_id: userId,
+      leccion_id: leccionId,
+      insignias: local.insignias.includes(leccionId) ? [leccionId] : [],
+      puntos: local.insignias.includes(leccionId) ? 10 : 5,
+      tiempo_total: Math.floor(local.tiempoTotal / local.leccionesCompletadas.length),
+    }));
+
+    const { error: insertErr } = await supabase
+      .from("progreso_usuario")
+      .upsert(rows, { onConflict: "user_id,leccion_id" });
+
+    if (insertErr) throw insertErr;
+
+    console.log(`Migradas ${rows.length} lecciones a Supabase`);
+    return true;
+  } catch (error) {
+    console.error("Error migrando progreso:", error);
+    return false;
+  }
+}
+
 // ===== MAIN FUNCTIONS =====
 
 export function marcarLeccionCompletada(leccionId, insignia, userId) {

@@ -6,6 +6,7 @@ import {
   getTiempoTotal,
   actualizarTiempo,
   syncProgresoFromSupabase,
+  migrarProgresoLocalASupabase,
 } from "../lib/progress";
 import { lecciones, getProgresoTotal } from "../data/lessons";
 
@@ -25,6 +26,12 @@ export function useProgress(userId) {
     if (userId) {
       syncProgresoFromSupabase(userId).then((supabaseData) => {
         if (!supabaseData) return;
+
+        if (supabaseData.leccionesCompletadas.length === 0) {
+          migrarProgresoLocalASupabase(userId);
+          return;
+        }
+
         setProgreso((local) => ({
           leccionesCompletadas: [
             ...new Set([
