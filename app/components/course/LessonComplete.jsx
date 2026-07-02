@@ -91,9 +91,9 @@ export default function LessonComplete({ insignia, puntos, siguiente, onDismiss 
                 >
                   <RewardBadge insigniaId={insignia} size="sm" unlocked />
                   <div>
-                    <p className="text-xs text-zinc-400">Insignia desbloqueada</p>
+                    <p className="text-xs text-zinc-400">Recompensa al completar</p>
                     <p className="text-sm font-semibold text-primary">
-                      {insignia.replace(/-/g, " ")} · +{puntos} pts
+                      Insignia &ldquo;{insignia.replace(/-/g, " ")}&rdquo; · +{puntos} puntos
                     </p>
                   </div>
                 </motion.div>
