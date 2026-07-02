@@ -107,15 +107,6 @@ export default function LeccionRoute() {
           </Link>
         </motion.div>
 
-        {showComplete && (
-          <LessonComplete
-            insignia={leccion.recompensa?.insignia}
-            puntos={leccion.recompensa?.puntos}
-            siguiente={siguiente}
-            onDismiss={handleDismissComplete}
-          />
-        )}
-
         {/* Cabecera de la lección */}
         <motion.div custom={1} variants={fadeSlide} className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -178,6 +169,15 @@ export default function LeccionRoute() {
         <motion.div custom={4} variants={fadeSlide} className="bg-dark-800 rounded-2xl border border-zinc-700/50 p-6 sm:p-8 mb-8">
           <CodeEditor ejercicio={leccion.ejercicio} onResolver={handleResolver} />
         </motion.div>
+
+        {showComplete && (
+          <LessonComplete
+            insignia={leccion.recompensa?.insignia}
+            puntos={leccion.recompensa?.puntos}
+            siguiente={siguiente}
+            onDismiss={handleDismissComplete}
+          />
+        )}
 
         {/* Navegación */}
         <motion.div custom={5} variants={fadeSlide} className="flex items-center justify-between gap-4">
