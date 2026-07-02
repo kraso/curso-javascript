@@ -1,7 +1,8 @@
 import { useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, ArrowRight, PartyPopper } from "lucide-react";
+import { ArrowRight, PartyPopper, Trophy } from "lucide-react";
 import Button from "../ui/Button";
+import RewardBadge from "./RewardBadge";
 import { Link } from "@remix-run/react";
 
 const AUTO_DISMISS_MS = 6000;
@@ -46,14 +47,20 @@ export default function LessonComplete({ insignia, puntos, siguiente, onDismiss 
       >
         <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-            {/* Icon */}
+            {/* Badge */}
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.15, type: "spring", stiffness: 200 }}
-              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center shrink-0"
+              className="shrink-0"
             >
-              <PartyPopper size={26} className="text-dark-900" />
+              {insignia ? (
+                <RewardBadge insigniaId={insignia} size="md" unlocked />
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center">
+                  <PartyPopper size={26} className="text-dark-900" />
+                </div>
+              )}
             </motion.div>
 
             {/* Text + reward */}
@@ -80,12 +87,15 @@ export default function LessonComplete({ insignia, puntos, siguiente, onDismiss 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.35 }}
-                  className="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20"
+                  className="inline-flex items-center gap-3 mt-3 px-4 py-2 rounded-xl bg-gradient-to-r from-primary/10 to-amber-500/10 border border-primary/20"
                 >
-                  <Trophy size={14} className="text-primary" />
-                  <span className="text-xs font-medium text-primary">
-                    {insignia.replace(/-/g, " ")} · +{puntos} pts
-                  </span>
+                  <RewardBadge insigniaId={insignia} size="sm" unlocked />
+                  <div>
+                    <p className="text-xs text-zinc-400">Insignia desbloqueada</p>
+                    <p className="text-sm font-semibold text-primary">
+                      {insignia.replace(/-/g, " ")} · +{puntos} pts
+                    </p>
+                  </div>
                 </motion.div>
               )}
             </div>
