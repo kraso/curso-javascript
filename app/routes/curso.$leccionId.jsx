@@ -179,6 +179,31 @@ export default function LeccionRoute() {
           />
         )}
 
+        {/* Recompensa */}
+        {leccion.recompensa && (
+          <motion.div custom={2} variants={fadeSlide} className={`flex items-center gap-4 p-4 rounded-xl border mb-8 transition-colors ${
+            completada
+              ? "bg-primary/5 border-primary/30"
+              : "bg-dark-800 border-zinc-700/50"
+          }`}>
+            <RewardBadge insigniaId={leccion.recompensa.insignia} unlocked={completada} />
+            <div>
+              <p className="text-sm text-zinc-400">Recompensa al completar</p>
+              <p className={`font-semibold ${completada ? "text-primary" : "text-zinc-100"}`}>
+                Insignia &ldquo;{leccion.recompensa.insignia.replace(/-/g, " ")}&rdquo; · +{leccion.recompensa.puntos} puntos
+              </p>
+            </div>
+            {completada && (
+              <div className="ml-auto">
+                <span className="flex items-center gap-1 text-emerald-400 text-sm">
+                  <CheckCircle2 size={14} />
+                  Obtenida
+                </span>
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* Navegación */}
         <motion.div custom={5} variants={fadeSlide} className="flex items-center justify-between gap-4">
           {anterior ? (
