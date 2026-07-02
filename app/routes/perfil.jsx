@@ -98,6 +98,8 @@ export default function Perfil() {
 
       if (updateError) throw updateError;
 
+      await supabase.auth.getUser();
+
       setAvatarUrl(publicUrl);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);

@@ -31,3 +31,48 @@ CREATE POLICY "Usuarios ven su propio progreso"
   FOR ALL
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
+
+-- ============================================
+-- Storage: Bucket avatars
+-- ============================================
+
+-- Crear bucket público para avatares
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Política: usuarios autenticados pueden subir avatares
+DROP POLICY IF EXISTS "Usuarios suben su avatar" ON storage.objects;
+CREATE POLICY "Usuarios suben su avatar"
+  ON storage.objects
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (
+    bucket_id = 'avatars'
+    AND (storage.foldername(name))[1] = 'avatars'
+  );
+
+-- Política: cualquiera puede ver avatares (bucket público)
+DROP POLICY IF EXISTS "Avatar publicly readable" ON storage.objects;
+CREATE POLICY "Avatar publicly readable"
+  ON storage.objects
+  FOR SELECT
+  TO public
+  USING (bucket_id = 'avatars');
+
+-- Política: usuarios pueden actualizar su propio avatar
+DROP POLICY IF EXISTS "Usuarios actualizan su avatar" ON storage.objects;
+CREATE POLICY "Usuarios actualizan su avatar"
+  ON storage.objects
+  FOR UPDATE
+  TO authenticated
+  USING (bucket_id = 'avatars')
+  WITH CHECK (bucket_id = 'avatars');
+
+-- Política: usuarios pueden eliminar su propio avatar
+DROP POLICY IF EXISTS "Usuarios eliminan su avatar" ON storage.objects;
+CREATE POLICY "Usuarios eliminan su avatar"
+  ON storage.objects
+  FOR DELETE
+  TO authenticated
+  USING (bucket_id = 'avatars');
