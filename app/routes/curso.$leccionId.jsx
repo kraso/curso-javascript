@@ -89,15 +89,6 @@ export default function LeccionRoute() {
     <>
       <SyncToast show={showSync} success={syncSuccess} />
 
-      {showComplete && (
-        <LessonComplete
-          insignia={leccion.recompensa?.insignia}
-          puntos={leccion.recompensa?.puntos}
-          siguiente={siguiente}
-          onDismiss={handleDismissComplete}
-        />
-      )}
-
       <motion.div
         key={leccionId}
         initial="hidden"
@@ -113,6 +104,15 @@ export default function LeccionRoute() {
             Volver al curso
           </Link>
         </motion.div>
+
+        {showComplete && (
+          <LessonComplete
+            insignia={leccion.recompensa?.insignia}
+            puntos={leccion.recompensa?.puntos}
+            siguiente={siguiente}
+            onDismiss={handleDismissComplete}
+          />
+        )}
 
         {/* Cabecera de la lección */}
         <motion.div custom={1} variants={fadeSlide} className="mb-8">
