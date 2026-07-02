@@ -149,23 +149,21 @@ export function parseMarkdown(content) {
   // 3. Now escape HTML in the remaining text
   processed = escapeHtml(processed);
 
-  // 4. Restore inline code
+  // 4. Bold & Italic BEFORE restoring inline code (protects * inside `code`)
+  processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+  // 5. Restore inline code
   processed = processed.replace(
     /\x00INLINE_(\d+)\x00/g,
     (_, id) => `<code class="code-inline">${escapeHtml(inlineCodes[parseInt(id)])}</code>`
   );
 
-  // 5. Headers
+  // 6. Headers
   processed = processed.replace(/^### (.*)/gm, '<h3>$1</h3>');
   processed = processed.replace(/^## (.*)/gm, '<h2>$1</h2>');
 
-  // 6. Bold
-  processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // 7. Italic
-  processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-  // 8. Blockquotes (after escapeHtml, > is &gt;)
+  // 7. Blockquotes (after escapeHtml, > is &gt;)
   processed = processed.replace(/^&gt; (.*)/gm, '<blockquote>$1</blockquote>');
 
   // 9. Unordered lists
