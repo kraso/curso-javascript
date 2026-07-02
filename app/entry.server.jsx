@@ -27,7 +27,7 @@ function handleBotRequest(request, responseStatusCode, responseHeaders, remixCon
           shellRendered = true;
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
-          responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set("Content-Type", "text/html; charset=utf-8");
           resolve(new Response(stream, { headers: responseHeaders, status: responseStatusCode }));
           pipe(body);
         },
@@ -54,7 +54,7 @@ function handleBrowserRequest(request, responseStatusCode, responseHeaders, remi
           shellRendered = true;
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
-          responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set("Content-Type", "text/html; charset=utf-8");
           resolve(new Response(stream, { headers: responseHeaders, status: responseStatusCode }));
           pipe(body);
         },
