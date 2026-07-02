@@ -70,7 +70,7 @@ export default function Footer() {
 
         <div className="mt-10 pt-8 border-t border-zinc-800">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-            <p className="text-zinc-600 text-sm">
+            <p className="text-zinc-600 text-sm" suppressHydrationWarning>
               &copy; {new Date().getFullYear()} javascript-learning-app.dev · Marcos Calabrés Ibáñez. Todos los derechos reservados.
             </p>
             <p className="text-zinc-600 text-sm flex items-center gap-1">

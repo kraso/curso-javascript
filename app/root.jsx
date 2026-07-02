@@ -15,19 +15,17 @@ export const meta = () => {
     { title: "JavaScript está en tus manos - Curso Interactivo" },
     { name: "description", content: "Aprende JavaScript de forma interactiva con ejercicios prácticos, un editor de código en el navegador y un sistema de progreso gamificado." },
     { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-    { name: "apple-mobile-web-app-capable", content: "yes" },
+    { name: "mobile-web-app-capable", content: "yes" },
     { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
     { charSet: "utf-8" },
-    { name: "author", content: "JavaScript Learning App" },
+    { name: "author", content: "Marcos Calabrés Ibáñez" },
     { name: "robots", content: "index, follow" },
     { name: "theme-color", content: "#0a0a0a" },
-    // Open Graph
     { property: "og:title", content: "JavaScript está en tus manos - Curso Interactivo" },
     { property: "og:description", content: "Aprende JavaScript de forma interactiva con ejercicios prácticos y sistema de progreso." },
     { property: "og:url", content: PROJECT_URL },
     { property: "og:type", content: "website" },
     { property: "og:locale", content: "es_ES" },
-    // Twitter
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "JavaScript está en tus manos" },
     { name: "twitter:description", content: "Curso interactivo de JavaScript con ejercicios prácticos." },
@@ -53,13 +51,8 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("js-course-theme");if(t==="light"||t==="dark")document.documentElement.classList.add(t);else if(window.matchMedia("(prefers-color-scheme:light)").matches)document.documentElement.classList.add("light")}catch(e){}`,
-          }}
-        />
       </head>
-      <body className="bg-dark-900 text-zinc-100 font-sans antialiased min-h-screen safe-top safe-bottom">
+      <body className="bg-dark-900 text-zinc-100 font-sans antialiased min-h-screen safe-top safe-bottom" suppressHydrationWarning>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
