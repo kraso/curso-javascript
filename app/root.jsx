@@ -49,7 +49,7 @@ export const links = () => {
 
 export default function App() {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <Meta />
         <Links />
