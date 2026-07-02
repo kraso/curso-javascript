@@ -71,5 +71,11 @@ export function useAuth() {
     setUser(null);
   }, []);
 
-  return { user, loading, error, signIn, signUp, signOut };
+  const refreshUser = useCallback(async () => {
+    if (!isSupabaseConfigured()) return;
+    const { data: { user: freshUser } } = await supabase.auth.getUser();
+    if (freshUser) setUser({ ...freshUser });
+  }, []);
+
+  return { user, loading, error, signIn, signUp, signOut, refreshUser };
 }

@@ -12,7 +12,7 @@ import { useProgress } from "../hooks/useProgress";
 import { supabase } from "../lib/supabase";
 
 export default function Perfil() {
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUser } = useAuth();
   const { progreso } = useProgress(user?.id);
   const navigate = useNavigate();
 
@@ -98,7 +98,7 @@ export default function Perfil() {
 
       if (updateError) throw updateError;
 
-      await supabase.auth.getUser();
+      await refreshUser();
 
       setAvatarUrl(publicUrl);
       setSaved(true);
@@ -123,6 +123,7 @@ export default function Perfil() {
     if (updateError) {
       setError(updateError.message);
     } else {
+      await refreshUser();
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     }
