@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@remix-run/react";
-import { Code2, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Code2, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2, AlertTriangle } from "lucide-react";
 import SkipLink from "../components/SkipLink";
 import Button from "../components/ui/Button";
 import { useAuth } from "../hooks/useAuth";
@@ -19,6 +19,7 @@ export default function Registro() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [registered, setRegistered] = useState(false);
+  const [warning, setWarning] = useState(null);
   const { signUp, loading, error } = useAuth();
 
   const validar = () => {
@@ -33,13 +34,22 @@ export default function Registro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validar()) return;
-    const result = await signUp(email, password, { data: { nombre } });
-    if (typeof result === "object" && result !== null) {
-      if (result.needsConfirmation) {
-        setRegistered(true);
-      } else {
-        window.location.href = "/curso";
+    setWarning(null);
+    try {
+      const result = await signUp(email, password, { data: { nombre } });
+      if (typeof result === "string") {
+        setWarning(result);
+        return;
       }
+      if (typeof result === "object" && result !== null) {
+        if (result.needsConfirmation) {
+          setRegistered(true);
+        } else {
+          window.location.href = "/curso";
+        }
+      }
+    } catch {
+      setWarning("Error inesperado. Inténtalo de nuevo más tarde.");
     }
   };
 
@@ -89,6 +99,13 @@ export default function Registro() {
             <div role="alert" className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               <AlertCircle size={16} />
               {error}
+            </div>
+          )}
+
+          {warning && (
+            <div role="alert" className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
+              <AlertTriangle size={16} />
+              {warning}
             </div>
           )}
 

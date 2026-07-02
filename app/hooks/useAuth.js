@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
+function mapAuthError(message) {
+  if (message.includes("already registered")) return "Este email ya está registrado.";
+  if (message.includes("valid email")) return "El email no es válido.";
+  if (message.includes("at least 6")) return "La contraseña debe tener al menos 6 caracteres.";
+  if (message.includes("Password")) return "La contraseña no cumple los requisitos de seguridad.";
+  if (message.includes("rate")) return "Demasiados intentos. Espera unos minutos e inténtalo de nuevo.";
+  return message || "Ha ocurrido un error inesperado.";
+}
+
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,38 +40,61 @@ export function useAuth() {
 
   const signIn = useCallback(async (email, password) => {
     if (!isSupabaseConfigured()) {
-      setError("Supabase no está configurado");
-      return "Supabase no está configurado";
+      const msg = "Supabase no está configurado. Revisa las variables de entorno.";
+      setError(msg);
+      return msg;
     }
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-      return error.message;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      setLoading(false);
+      if (error) {
+        const msg = mapAuthError(error.message);
+        setError(msg);
+        return msg;
+      }
+      return null;
+    } catch (e) {
+      setLoading(false);
+      const msg = "Error de red. Comprueba tu conexión a internet.";
+      setError(msg);
+      return msg;
     }
-    return null;
   }, []);
 
   const signUp = useCallback(async (email, password, options) => {
     if (!isSupabaseConfigured()) {
-      setError("Supabase no está configurado");
-      return "Supabase no está configurado";
+      const msg = "Supabase no está configurado. Revisa las variables de entorno.";
+      setError(msg);
+      return msg;
     }
     setLoading(true);
     setError(null);
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options,
-    });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-      return error.message;
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options,
+      });
+      setLoading(false);
+      if (error) {
+        const msg = mapAuthError(error.message);
+        setError(msg);
+        return msg;
+      }
+      if (!data.user) {
+        const msg = "No se pudo crear la cuenta. Inténtalo de nuevo.";
+        setError(msg);
+        return msg;
+      }
+      return { needsConfirmation: !data.session };
+    } catch (e) {
+      setLoading(false);
+      const msg = "Error de red. Comprueba tu conexión a internet.";
+      setError(msg);
+      return msg;
     }
-    return { needsConfirmation: !data.session };
   }, []);
 
   const signOut = useCallback(async () => {

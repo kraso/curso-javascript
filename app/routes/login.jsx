@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "@remix-run/react";
-import { Code2, Mail, Lock, ArrowRight, AlertCircle } from "lucide-react";
+import { Code2, Mail, Lock, ArrowRight, AlertCircle, AlertTriangle } from "lucide-react";
 import SkipLink from "../components/SkipLink";
 import Button from "../components/ui/Button";
 import { useAuth } from "../hooks/useAuth";
@@ -16,14 +16,22 @@ export const meta = () => [
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [warning, setWarning] = useState(null);
   const { signIn, loading, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const err = await signIn(email, password);
-    if (!err) {
+    setWarning(null);
+    try {
+      const err = await signIn(email, password);
+      if (err) {
+        setWarning(err);
+        return;
+      }
       navigate("/curso");
+    } catch {
+      setWarning("Error inesperado. Inténtalo de nuevo más tarde.");
     }
   };
 
@@ -49,6 +57,13 @@ export default function Login() {
             <div role="alert" className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               <AlertCircle size={16} />
               {error}
+            </div>
+          )}
+
+          {warning && (
+            <div role="alert" className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
+              <AlertTriangle size={16} />
+              {warning}
             </div>
           )}
 
