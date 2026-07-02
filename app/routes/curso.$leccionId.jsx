@@ -8,7 +8,6 @@ import LessonComplete from "../components/course/LessonComplete";
 import SyncToast from "../components/course/SyncToast";
 import Button from "../components/ui/Button";
 import { getLeccionPorId, getSiguienteLeccion, getLeccionAnterior } from "../data/lessons";
-import { useProgress } from "../hooks/useProgress";
 import { parseMarkdown } from "../utils/syntax";
 import { isSupabaseConfigured } from "../lib/supabase";
 
@@ -46,8 +45,7 @@ const fadeSlide = {
 export default function LeccionRoute() {
   const { leccionId } = useParams();
   const { leccion } = useLoaderData();
-  const { progreso } = useOutletContext();
-  const { completarLeccion, estaCompletada } = useProgress();
+  const { progreso, completarLeccion } = useOutletContext();
   const leccionesCompletadas = progreso?.leccionesCompletadas || [];
 
   const [showComplete, setShowComplete] = useState(false);

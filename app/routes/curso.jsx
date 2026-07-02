@@ -5,14 +5,14 @@ import Footer from "../components/layout/Footer";
 import { useProgress } from "../hooks/useProgress";
 
 export default function CursoLayout() {
-  const { progreso } = useProgress();
+  const progress = useProgress();
 
   return (
     <div className="min-h-screen bg-dark-900 flex flex-col">
       <SkipLink />
       <Navbar />
       <main id="main-content" className="flex-1 pt-16">
-        <Outlet context={{ progreso }} />
+        <Outlet context={progress} />
       </main>
       <Footer />
     </div>
