@@ -71,15 +71,19 @@ export default function LeccionRoute() {
   const anterior = getLeccionAnterior(leccion);
 
   const handleResolver = useCallback(() => {
+    const yaCompletada = leccionesCompletadas.includes(leccion.id);
     completarLeccion(leccion.id, leccion.recompensa?.insignia);
-    setShowComplete(true);
+
+    if (!yaCompletada) {
+      setShowComplete(true);
+    }
 
     if (isSupabaseConfigured()) {
       setShowSync(true);
       setSyncSuccess(true);
       setTimeout(() => setShowSync(false), 2500);
     }
-  }, [leccion.id, leccion.recompensa, completarLeccion]);
+  }, [leccion.id, leccion.recompensa, completarLeccion, leccionesCompletadas]);
 
   const handleDismissComplete = useCallback(() => {
     setShowComplete(false);

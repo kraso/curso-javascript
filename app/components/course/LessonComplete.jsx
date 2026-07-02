@@ -16,15 +16,19 @@ export default function LessonComplete({ insignia, puntos, siguiente, onDismiss 
   }, [onDismiss]);
 
   useEffect(() => {
-    const timer = setTimeout(handleDismiss, AUTO_DISMISS_MS);
+    const autoTimer = setTimeout(handleDismiss, AUTO_DISMISS_MS);
 
     const handleInteraction = () => handleDismiss();
-    window.addEventListener("scroll", handleInteraction, { once: true, passive: true });
-    window.addEventListener("keydown", handleInteraction, { once: true });
-    window.addEventListener("mousedown", handleInteraction, { once: true });
+
+    const setupTimer = setTimeout(() => {
+      window.addEventListener("scroll", handleInteraction, { once: true, passive: true });
+      window.addEventListener("keydown", handleInteraction, { once: true });
+      window.addEventListener("mousedown", handleInteraction, { once: true });
+    }, 800);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(autoTimer);
+      clearTimeout(setupTimer);
       window.removeEventListener("scroll", handleInteraction);
       window.removeEventListener("keydown", handleInteraction);
       window.removeEventListener("mousedown", handleInteraction);
