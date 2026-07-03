@@ -233,6 +233,11 @@ export default function ExamEditor({ ejercicio, onResolver }) {
                   </div>
                 </div>
                 <div className="editor-body">
+                  <div className="editor-lines">
+                    {Array.from({ length: (respuestas[i] || "").split("\n").length }, (_, li) => (
+                      <span key={li + 1}>{li + 1}</span>
+                    ))}
+                  </div>
                   <div className="editor-code-area">
                     <div
                       className="editor-highlight"
@@ -243,6 +248,12 @@ export default function ExamEditor({ ejercicio, onResolver }) {
                       value={respuestas[i] || ""}
                       onChange={(e) => actualizarRespuesta(i, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(e, i)}
+                      onScroll={(e) => {
+                        const hl = e.target.previousElementSibling;
+                        const lines = e.target.closest(".editor-code-area").previousElementSibling;
+                        if (hl) { hl.scrollTop = e.target.scrollTop; hl.scrollLeft = e.target.scrollLeft; }
+                        if (lines) { lines.scrollTop = e.target.scrollTop; }
+                      }}
                       className="editor-textarea"
                       spellCheck={false}
                       autoCapitalize="off"
