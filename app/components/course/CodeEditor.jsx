@@ -47,43 +47,60 @@ export default function CodeEditor({ ejercicio, onResolver }) {
 
     setTimeout(() => {
       try {
-        const testResults = ejercicio.tests.map((test) => {
+        const wrappedCodeTemplate = `
+          var __logs = [];
+          var __origLog = console.log;
+          console.log = function() { __logs.push(Array.from(arguments).map(String).join(" ")); __origLog.apply(console, arguments); };
+          var __sourceCode = ${JSON.stringify(codigo)};
+          ${codigo}
+          console.log = __origLog;
+          return (function() { return ${"{TEST_CODE}"}; })();
+        `;
+
+        const runTest = (test) => {
           try {
-            const wrappedCode = `
-              var __logs = [];
-              var __origLog = console.log;
-              console.log = function() { __logs.push(Array.from(arguments).map(String).join(" ")); __origLog.apply(console, arguments); };
-              ${codigo}
-              console.log = __origLog;
-              return (function() { return ${test.codigo}; })();
-            `;
-            const fn = new Function(wrappedCode);
-            const pass = fn();
-            return { ...test, pass: !!pass };
+            const fn = new Function(wrappedCodeTemplate.replace("{TEST_CODE}", test.codigo));
+            const result = fn();
+
+            if (result && typeof result.then === "function") {
+              return result.then(
+                (val) => ({ ...test, pass: !!val }),
+                (err) => {
+                  let hint = null;
+                  if (err instanceof TypeError && err.message.includes("is not a function")) {
+                    hint = "No se encontró la función. Asegúrate de que esté definida.";
+                  }
+                  return { ...test, pass: false, error: err.message, hint };
+                }
+              );
+            }
+
+            return { ...test, pass: !!result };
           } catch (error) {
             let hint = null;
-            if (error instanceof TypeError) {
-              if (error.message.includes("is not a function")) {
-                hint = "No se encontró la función. Asegúrate de que esté definida.";
-              }
+            if (error instanceof TypeError && error.message.includes("is not a function")) {
+              hint = "No se encontró la función. Asegúrate de que esté definida.";
             }
             return { ...test, pass: false, error: error.message, hint };
           }
+        };
+
+        const promises = ejercicio.tests.map(runTest);
+        Promise.all(promises).then((testResults) => {
+          const todosPasaron = testResults.every((r) => r.pass);
+          setResultado({ tests: testResults, todosPasaron });
+
+          if (todosPasaron && onResolver) {
+            onResolver();
+          }
+          setEjecutando(false);
         });
-
-        const todosPasaron = testResults.every((r) => r.pass);
-        setResultado({ tests: testResults, todosPasaron });
-
-        if (todosPasaron && onResolver) {
-          onResolver();
-        }
       } catch (error) {
         setResultado({
           tests: [],
           todosPasaron: false,
           error: error.message,
         });
-      } finally {
         setEjecutando(false);
       }
     }, 300);

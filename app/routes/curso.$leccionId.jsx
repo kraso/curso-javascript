@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useOutletContext, useLoaderData } from "@remix-run/react";
-import { ArrowLeft, ArrowRight, Clock, Trophy, CheckCircle2, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Trophy, CheckCircle2, BookOpen, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import CodeEditor from "../components/course/CodeEditor";
+import ExamEditor from "../components/course/ExamEditor";
 import RewardBadge from "../components/course/RewardBadge";
 import LessonComplete from "../components/course/LessonComplete";
 import SyncToast from "../components/course/SyncToast";
@@ -167,7 +168,11 @@ export default function LeccionRoute() {
 
         {/* Ejercicio interactivo */}
         <motion.div custom={4} variants={fadeSlide} className="bg-dark-800 rounded-2xl border border-zinc-700/50 p-6 sm:p-8 mb-8">
-          <CodeEditor ejercicio={leccion.ejercicio} onResolver={handleResolver} />
+          {leccion.tipo === "examen" ? (
+            <ExamEditor ejercicio={leccion.ejercicio} onResolver={handleResolver} />
+          ) : (
+            <CodeEditor ejercicio={leccion.ejercicio} onResolver={handleResolver} />
+          )}
         </motion.div>
 
         {showComplete && (

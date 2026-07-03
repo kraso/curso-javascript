@@ -1,9 +1,11 @@
 import { Link } from "@remix-run/react";
-import { CheckCircle2, Clock, Trophy } from "lucide-react";
+import { CheckCircle2, Clock, Trophy, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 
 export default function LessonCard({ leccion, completada, index = 0 }) {
+  const esExamen = leccion.tipo === "examen";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -14,6 +16,7 @@ export default function LessonCard({ leccion, completada, index = 0 }) {
         to={`/curso/${leccion.id}`}
         className={cn(
           "group block p-4 rounded-xl border transition-all duration-300",
+          esExamen && "border-dashed",
           completada
             ? "bg-primary/5 border-primary/30 hover:border-primary/50"
             : "bg-dark-800 border-zinc-700/50 hover:border-zinc-600 hover:bg-dark-700"
@@ -23,6 +26,10 @@ export default function LessonCard({ leccion, completada, index = 0 }) {
           <div className="flex-shrink-0 mt-0.5">
             {completada ? (
               <CheckCircle2 size={24} className="text-primary" />
+            ) : esExamen ? (
+              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                <Award size={14} className="text-primary" />
+              </div>
             ) : (
               <div className="w-6 h-6 rounded-full border-2 border-zinc-600 group-hover:border-primary flex items-center justify-center transition-colors">
                 <span className="text-xs font-bold text-zinc-500 group-hover:text-primary">{leccion.orden}</span>
@@ -34,6 +41,7 @@ export default function LessonCard({ leccion, completada, index = 0 }) {
               "font-semibold mb-1 truncate",
               completada ? "text-primary" : "text-zinc-100 group-hover:text-primary transition-colors"
             )}>
+              {esExamen && <Award size={13} className="inline mr-1.5 -mt-0.5" />}
               {leccion.titulo}
             </h3>
             <p className="text-sm text-zinc-500 line-clamp-2 mb-2">

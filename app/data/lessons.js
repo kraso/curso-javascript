@@ -74,8 +74,12 @@ JavaScript moderno es un lenguaje de programación **"seguro"**. En el navegador
       codigoSolucion: `console.log("¡Hola, JavaScript!");`,
       tests: [
         {
-          descripcion: "Se usa console.log()",
-          codigo: `typeof console !== 'undefined' && typeof console.log === 'function'`,
+          descripcion: "Se usó console.log() para mostrar un mensaje",
+          codigo: `__logs.length >= 1 && __logs.some(l => l.includes("Hola"))`,
+        },
+        {
+          descripcion: "El código contiene console.log()",
+          codigo: `__sourceCode.includes("console.log")`,
         },
       ],
     },
@@ -1033,16 +1037,20 @@ p.style.color = "red";
 p.remove();`,
       tests: [
         {
-          descripcion: "Se creó un elemento con createElement",
-          codigo: `(() => { const p = document.createElement("p"); p.textContent = "test"; document.body.appendChild(p); const exists = document.body.contains(p); p.remove(); return exists; })()`,
+          descripcion: "Se usó document.createElement para crear un elemento",
+          codigo: `__sourceCode.includes("document.createElement")`,
         },
         {
           descripcion: "Se usó appendChild para agregar al DOM",
-          codigo: `typeof document.body.appendChild === 'function'`,
+          codigo: `__sourceCode.includes("appendChild")`,
         },
         {
-          descripcion: "Se usó style para modificar estilos",
-          codigo: `(() => { const p = document.createElement("p"); p.style.color = "blue"; return p.style.color === "blue"; })()`,
+          descripcion: "Se modificó style.color del elemento",
+          codigo: `__sourceCode.includes("style") && __sourceCode.includes("color")`,
+        },
+        {
+          descripcion: "Se eliminó el elemento con .remove()",
+          codigo: `__sourceCode.includes(".remove()")`,
         },
       ],
     },
@@ -1112,12 +1120,20 @@ btn.addEventListener("click", function() {
 });`,
       tests: [
         {
-          descripcion: "Se creó un botón con createElement",
-          codigo: `(() => { const b = document.createElement("button"); b.textContent = "test"; document.body.appendChild(b); const ok = b.tagName === "BUTTON"; b.remove(); return ok; })()`,
+          descripcion: "Se creó un elemento con document.createElement",
+          codigo: `__sourceCode.includes("document.createElement")`,
         },
         {
-          descripcion: "Se usó addEventListener",
-          codigo: `typeof document.createElement("button").addEventListener === 'function'`,
+          descripcion: "Se usó addEventListener para escuchar eventos",
+          codigo: `__sourceCode.includes("addEventListener")`,
+        },
+        {
+          descripcion: "Se escucha el evento 'click'",
+          codigo: `__sourceCode.includes("click")`,
+        },
+        {
+          descripcion: "Se modifica el estilo del elemento",
+          codigo: `__sourceCode.includes("style")`,
         },
       ],
     },
@@ -1338,6 +1354,10 @@ Promise.race([promesa1, promesa2])
           descripcion: "retorna una promesa",
           codigo: `crearPromesa(42) instanceof Promise`,
         },
+        {
+          descripcion: "la promesa se resuelve con el valor correcto",
+          codigo: `crearPromesa(42).then(v => v === 42)`,
+        },
       ],
     },
     completada: false,
@@ -1404,6 +1424,10 @@ async function ejemplo() {
         {
           descripcion: "retorna una promesa",
           codigo: `esperarSegundos(0.01) instanceof Promise`,
+        },
+        {
+          descripcion: "la promesa se resuelve con 'Completado'",
+          codigo: `esperarSegundos(0.01).then(v => v === "Completado")`,
         },
       ],
     },
@@ -1541,6 +1565,14 @@ function validarEmail(email) {
         {
           descripcion: "validarEmail('invalido') es false",
           codigo: `validarEmail('invalido') === false`,
+        },
+        {
+          descripcion: "validarEmail('usuario@dominio.co') es true",
+          codigo: `validarEmail('usuario@dominio.co') === true`,
+        },
+        {
+          descripcion: "validarEmail('sin@arroba') es false (falta punto)",
+          codigo: `validarEmail('sin@arroba') === false`,
         },
       ],
     },
@@ -1927,13 +1959,396 @@ class TodoApp {
 }`,
       tests: [
         {
-          descripcion: "TodoApp funciona",
+          descripcion: "agregar y pendientes funcionan",
           codigo: `(() => { const app = new TodoApp(); app.agregar("Aprender JS"); app.agregar("Practicar"); app.completar(1); return app.pendientes().length === 1; })()`,
+        },
+        {
+          descripcion: "eliminar remueve un todo",
+          codigo: `(() => { const app = new TodoApp(); app.agregar("Uno"); app.agregar("Dos"); app.eliminar(1); return app.listar().length === 1 && app.listar()[0].id === 2; })()`,
+        },
+        {
+          descripcion: "listar retorna todos los todos",
+          codigo: `(() => { const app = new TodoApp(); app.agregar("A"); app.agregar("B"); app.agregar("C"); return app.listar().length === 3; })()`,
         },
       ],
     },
     completada: false,
     recompensa: { insignia: "Proyecto-completo", puntos: 30 },
+  },
+
+  // ===== EXÁMENES POR MÓDULO =====
+  {
+    id: "examen-modulo-1",
+    titulo: "Examen — Fundamentos",
+    descripcion: "Evalúa tus conocimientos de variables, tipos, operadores, control y funciones.",
+    modulo: 1,
+    moduloNombre: "Fundamentos",
+    orden: 7,
+    duracion: "20 min",
+    icono: "Award",
+    tipo: "examen",
+    contenido: `## Examen del Módulo 1: Fundamentos
+
+Resuelve los siguientes ejercicios para demostrar lo que has aprendido.
+
+**Preguntas de opción múltiple:**
+Selecciona la respuesta correcta en cada una.
+
+**Ejercicios de código:**
+Escribe el código que se solicita en cada caso.
+
+> **Nota:** Necesitas al menos el 70% de respuestas correctas para aprobar.`,
+    ejercicio: {
+      descripcion: "Examen de Fundamentos — Opción múltiple y código",
+      preguntas: [
+        {
+          tipo: "opcion",
+          pregunta: "¿Cuál es la diferencia principal entre `let`, `const` y `var`?",
+          opciones: [
+            "let y const tienen alcance de bloque, var tiene alcance de función",
+            "var y const son lo mismo, solo let cambia",
+            "const no puede contener objetos",
+            "let solo funciona en bucles",
+          ],
+          respuesta: 0,
+        },
+        {
+          tipo: "opcion",
+          pregunta: "¿Qué retorna `typeof null` en JavaScript?",
+          opciones: [
+            '"null"',
+            '"object"',
+            '"undefined"',
+            '"boolean"',
+          ],
+          respuesta: 1,
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una función 'mayor' que reciba dos números y retorne el mayor.",
+          codigoInicial: `// Función "mayor(a, b)" que retorna el mayor de los dos
+
+`,
+          codigoSolucion: `function mayor(a, b) { return a > b ? a : b; }`,
+          tests: [
+            { descripcion: "mayor(10, 5) retorna 10", codigo: `mayor(10, 5) === 10` },
+            { descripcion: "mayor(3, 7) retorna 7", codigo: `mayor(3, 7) === 7` },
+            { descripcion: "mayor(4, 4) retorna 4", codigo: `mayor(4, 4) === 4` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una función 'esPositivo' que reciba un número y retorne true si es positivo, false si es negativo o cero.",
+          codigoInicial: `// Función "esPositivo(n)" que retorna true si n > 0
+
+`,
+          codigoSolucion: `function esPositivo(n) { return n > 0; }`,
+          tests: [
+            { descripcion: "esPositivo(5) es true", codigo: `esPositivo(5) === true` },
+            { descripcion: "esPositivo(-3) es false", codigo: `esPositivo(-3) === false` },
+            { descripcion: "esPositivo(0) es false", codigo: `esPositivo(0) === false` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una función 'sumatoria' que reciba un array de números y retorne la suma de todos.",
+          codigoInicial: `// Función "sumatoria(arr)" que suma todos los elementos
+
+`,
+          codigoSolucion: `function sumatoria(arr) { return arr.reduce((s, n) => s + n, 0); }`,
+          tests: [
+            { descripcion: "sumatoria([1,2,3]) es 6", codigo: `sumatoria([1, 2, 3]) === 6` },
+            { descripcion: "sumatoria([10, -5, 5]) es 10", codigo: `sumatoria([10, -5, 5]) === 10` },
+            { descripcion: "sumatoria([]) es 0", codigo: `sumatoria([]) === 0` },
+          ],
+        },
+      ],
+    },
+    completada: false,
+    recompensa: { insignia: "Fundamentos-aprobado", puntos: 25 },
+  },
+  {
+    id: "examen-modulo-2",
+    titulo: "Examen — Intermedio",
+    descripcion: "Evalúa tus conocimientos de objetos, arrays, closures, DOM y eventos.",
+    modulo: 2,
+    moduloNombre: "Intermedio",
+    orden: 13,
+    duracion: "25 min",
+    icono: "Award",
+    tipo: "examen",
+    contenido: `## Examen del Módulo 2: Intermedio
+
+Demuestra lo que has aprendido sobre objetos, arrays, funciones avanzadas, DOM y eventos.
+
+> **Nota:** Necesitas al menos el 70% de respuestas correctas para aprobar.`,
+    ejercicio: {
+      descripcion: "Examen de Intermedio — Opción múltiple y código",
+      preguntas: [
+        {
+          tipo: "opcion",
+          pregunta: "¿Qué hace el método `Array.prototype.reduce()`?",
+          opciones: [
+            "Filtra elementos de un array",
+            "Transforma cada elemento y retorna un nuevo array",
+            "Acumula los elementos en un solo valor",
+            "Invierte el orden del array",
+          ],
+          respuesta: 2,
+        },
+        {
+          tipo: "opcion",
+          pregunta: "¿Qué es un closure en JavaScript?",
+          opciones: [
+            "Una función que no retorna valores",
+            "Una función que recuerda su scope léxico aunque se ejecute fuera de él",
+            "Un tipo de variable global",
+            "Un método para cerrar el navegador",
+          ],
+          respuesta: 1,
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea un objeto 'calculadora' con métodos sumar(a,b), restar(a,b) y multiplicar(a,b).",
+          codigoInicial: `// Objeto "calculadora" con 3 métodos matemáticos
+
+`,
+          codigoSolucion: `const calculadora = {
+  sumar: (a, b) => a + b,
+  restar: (a, b) => a - b,
+  multiplicar: (a, b) => a * b
+};`,
+          tests: [
+            { descripcion: "calculadora.sumar(2,3) es 5", codigo: `calculadora.sumar(2, 3) === 5` },
+            { descripcion: "calculadora.restar(10,4) es 6", codigo: `calculadora.restar(10, 4) === 6` },
+            { descripcion: "calculadora.multiplicar(3,7) es 21", codigo: `calculadora.multiplicar(3, 7) === 21` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una función 'crearContador' que retorne un objeto con incrementar() y obtener(). obtener() debe retornar cuántas veces se llamó incrementar().",
+          codigoInicial: `// Función "crearContador()" que retorna { incrementar(), obtener() }
+
+`,
+          codigoSolucion: `function crearContador() {
+  let count = 0;
+  return {
+    incrementar() { count++; },
+    obtener() { return count; }
+  };
+}`,
+          tests: [
+            { descripcion: "obtener() inicia en 0", codigo: `(() => { const c = crearContador(); return c.obtener() === 0; })()` },
+            { descripcion: "incrementar aumenta el contador", codigo: `(() => { const c = crearContador(); c.incrementar(); c.incrementar(); return c.obtener() === 2; })()` },
+            { descripcion: "contadores son independientes", codigo: `(() => { const c1 = crearContador(); const c2 = crearContador(); c1.incrementar(); return c1.obtener() === 1 && c2.obtener() === 0; })()` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una función 'filtrarPorLongitud' que reciba un array de strings y un número, y retorne solo los strings con esa longitud o mayor.",
+          codigoInicial: `// "filtrarPorLongitud(strings, minLen)" retorna strings con longitud >= minLen
+
+`,
+          codigoSolucion: `function filtrarPorLongitud(strings, minLen) {
+  return strings.filter(s => s.length >= minLen);
+}`,
+          tests: [
+            { descripcion: "filtra correctamente", codigo: `JSON.stringify(filtrarPorLongitud(["hi", "hello", "hey", "hola"], 4)) === JSON.stringify(["hello", "hola"])` },
+            { descripcion: "retorna vacío si ninguno cumple", codigo: `filtrarPorLongitud(["a", "bb"], 10).length === 0` },
+          ],
+        },
+      ],
+    },
+    completada: false,
+    recompensa: { insignia: "Intermedio-aprobado", puntos: 25 },
+  },
+  {
+    id: "examen-modulo-3",
+    titulo: "Examen — Avanzado",
+    descripcion: "Evalúa tus conocimientos de clases, async/await, promesas, módulos y regex.",
+    modulo: 3,
+    moduloNombre: "Avanzado",
+    orden: 19,
+    duracion: "25 min",
+    icono: "Award",
+    tipo: "examen",
+    contenido: `## Examen del Módulo 3: Avanzado
+
+Demuestra lo que has aprendido sobre clases, programación asíncrona, módulos y expresiones regulares.
+
+> **Nota:** Necesitas al menos el 70% de respuestas correctas para aprobar.`,
+    ejercicio: {
+      descripcion: "Examen de Avanzado — Opción múltiple y código",
+      preguntas: [
+        {
+          tipo: "opcion",
+          pregunta: "¿Cuál es la diferencia entre `Promise.all()` y `Promise.allSettled()`?",
+          opciones: [
+            "No hay diferencia, ambos hacen lo mismo",
+            "Promise.all falla si alguna promesa falla, allSettled espera a todas",
+            "Promise.allSettled es más rápido",
+            "Promise.all solo acepta 2 promesas",
+          ],
+          respuesta: 1,
+        },
+        {
+          tipo: "opcion",
+          pregunta: "¿Qué hace la palabra clave `async` en una función?",
+          opciones: [
+            "Ejecuta el código en paralelo",
+            "Convierte la función en un hilo separado",
+            "Hace que la función retorne una Promise automáticamente",
+            "Detiene la ejecución hasta que haya datos",
+          ],
+          respuesta: 2,
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una clase 'Persona' con constructor(name, age), un método saludar() que retorne 'Hola, soy {name}', y un método esMayorDeEdad() que retorne true si age >= 18.",
+          codigoInicial: `// Clase "Persona" con saludar() y esMayorDeEdad()
+
+`,
+          codigoSolucion: `class Persona {
+  constructor(name, age) { this.name = name; this.age = age; }
+  saludar() { return "Hola, soy " + this.name; }
+  esMayorDeEdad() { return this.age >= 18; }
+}`,
+          tests: [
+            { descripcion: "saludar() retorna el nombre correcto", codigo: `new Persona("Ana", 25).saludar() === "Hola, soy Ana"` },
+            { descripcion: "esMayorDeEdad() retorna true para 25", codigo: `new Persona("Ana", 25).esMayorDeEdad() === true` },
+            { descripcion: "esMayorDeEdad() retorna false para 15", codigo: `new Persona("Bob", 15).esMayorDeEdad() === false` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una función 'esperarYRetornar' que espere N milisegundos y retorne un mensaje dado. Usa async/await.",
+          codigoInicial: `// async function "esperarYRetornar(ms, mensaje)"
+// espera ms milisegundos y retorna el mensaje
+
+`,
+          codigoSolucion: `async function esperarYRetornar(ms, mensaje) {
+  await new Promise(r => setTimeout(r, ms));
+  return mensaje;
+}`,
+          tests: [
+            { descripcion: "retorna una promesa", codigo: `esperarYRetornar(10, "hola") instanceof Promise` },
+            { descripcion: "resuelve con el mensaje correcto", codigo: `esperarYRetornar(10, "éxito").then(v => v === "éxito")` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Crea una función 'extraerNumeros' que reciba un string y retorne un array con todos los números que contenga (como strings). Usa una expresión regular.",
+          codigoInicial: `// "extraerNumeros('abc12def34')" retorna ["12", "34"]
+
+`,
+          codigoSolucion: `function extraerNumeros(str) {
+  return str.match(/\\d+/g) || [];
+}`,
+          tests: [
+            { descripcion: "extrae números correctamente", codigo: `JSON.stringify(extraerNumeros("abc12def34")) === JSON.stringify(["12", "34"])` },
+            { descripcion: "retorna vacío si no hay números", codigo: `extraerNumeros("solo texto").length === 0` },
+            { descripcion: "extrae números de diferentes tamaños", codigo: `JSON.stringify(extraerNumeros("1 dos 22 tres 333")) === JSON.stringify(["1", "22", "333"])` },
+          ],
+        },
+      ],
+    },
+    completada: false,
+    recompensa: { insignia: "Avanzado-aprobado", puntos: 25 },
+  },
+  {
+    id: "examen-modulo-4",
+    titulo: "Examen — Especialización",
+    descripcion: "Evalúa tus conocimientos de algoritmos, estructuras de datos y proyectos prácticos.",
+    modulo: 4,
+    moduloNombre: "Especialización",
+    orden: 24,
+    duracion: "30 min",
+    icono: "Award",
+    tipo: "examen",
+    contenido: `## Examen del Módulo 4: Especialización
+
+Demuestra lo que has aprendido sobre algoritmos, estructuras de datos y resolución de problemas.
+
+> **Nota:** Necesitas al menos el 70% de respuestas correctas para aprobar.`,
+    ejercicio: {
+      descripcion: "Examen de Especialización — Opción múltiple y código",
+      preguntas: [
+        {
+          tipo: "opcion",
+          pregunta: "¿Cuál es la complejidad temporal de acceder a un elemento por índice en un array?",
+          opciones: [
+            "O(n)",
+            "O(log n)",
+            "O(1)",
+            "O(n²)",
+          ],
+          respuesta: 2,
+        },
+        {
+          tipo: "opcion",
+          pregunta: "¿Qué estructura de datos funciona bajo el principio LIFO (Last In, First Out)?",
+          opciones: [
+            "Cola (Queue)",
+            "Pila (Stack)",
+            "Array",
+            "Objeto",
+          ],
+          respuesta: 1,
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Implementa una función 'fibonacci(n)' que retorne el nth número de la secuencia de Fibonacci (empezando en 0). fibonacci(0)=0, fibonacci(1)=1, fibonacci(6)=8.",
+          codigoInicial: `// "fibonacci(n)" retorna el nth número de Fibonacci
+
+`,
+          codigoSolucion: `function fibonacci(n) {
+  if (n <= 1) return n;
+  let a = 0, b = 1;
+  for (let i = 2; i <= n; i++) { [a, b] = [b, a + b]; }
+  return b;
+}`,
+          tests: [
+            { descripcion: "fibonacci(0) es 0", codigo: `fibonacci(0) === 0` },
+            { descripcion: "fibonacci(1) es 1", codigo: `fibonacci(1) === 1` },
+            { descripcion: "fibonacci(6) es 8", codigo: `fibonacci(6) === 8` },
+            { descripcion: "fibonacci(10) es 55", codigo: `fibonacci(10) === 55` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Implementa una función 'invertirPalabras' que reciba una frase y retorne las palabras en orden inverso. invertirPalabras('hola mundo cruel') → 'cruel mundo hola'.",
+          codigoInicial: `// "invertirPalabras(frase)" retorna las palabras invertidas
+
+`,
+          codigoSolucion: `function invertirPalabras(frase) {
+  return frase.split(" ").reverse().join(" ");
+}`,
+          tests: [
+            { descripcion: "invierte 3 palabras", codigo: `invertirPalabras("hola mundo cruel") === "cruel mundo hola"` },
+            { descripcion: "invierte 1 palabra", codigo: `invertirPalabras("sol") === "sol"` },
+            { descripcion: "invierte 4 palabras", codigo: `invertirPalabras("uno dos tres cuatro") === "cuatro tres dos uno"` },
+          ],
+        },
+        {
+          tipo: "codigo",
+          descripcion: "Implementa una función 'contarVocales' que retorne el número de vocales (a, e, i, o, u) en un string. No importa mayúsculas/minúsculas.",
+          codigoInicial: `// "contarVocales(texto)" retorna el número de vocales
+
+`,
+          codigoSolucion: `function contarVocales(texto) {
+  return (texto.match(/[aeiou]/gi) || []).length;
+}`,
+          tests: [
+            { descripcion: "cuenta vocales en 'hola'", codigo: `contarVocales("hola") === 2` },
+            { descripcion: "cuenta vocales en 'JavaScript'", codigo: `contarVocales("JavaScript") === 3` },
+            { descripcion: "retorna 0 para string sin vocales", codigo: `contarVocales("rhythm") === 0` },
+            { descripcion: "cuenta mayúsculas y minúsculas", codigo: `contarVocales("AEIOU") === 5` },
+          ],
+        },
+      ],
+    },
+    completada: false,
+    recompensa: { insignia: "Especializacion-aprobado", puntos: 30 },
   },
 ];
 

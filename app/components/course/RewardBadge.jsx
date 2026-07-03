@@ -7,6 +7,10 @@ const insigniasConfig = {
   "Maestro-matematicas": { icon: Target, color: "text-green-400", bg: "bg-green-400/10", label: "Maestro matemáticas" },
   "Logica-pura": { icon: Award, color: "text-purple-400", bg: "bg-purple-400/10", label: "Lógica pura" },
   "Iterador-pro": { icon: Trophy, color: "text-orange-400", bg: "bg-orange-400/10", label: "Iterador Pro" },
+  "Fundamentos-aprobado": { icon: Award, color: "text-amber-400", bg: "bg-amber-400/10", label: "Fundamentos aprobado" },
+  "Intermedio-aprobado": { icon: Award, color: "text-blue-400", bg: "bg-blue-400/10", label: "Intermedio aprobado" },
+  "Avanzado-aprobado": { icon: Award, color: "text-purple-400", bg: "bg-purple-400/10", label: "Avanzado aprobado" },
+  "Especializacion-aprobado": { icon: Award, color: "text-emerald-400", bg: "bg-emerald-400/10", label: "Especialización aprobado" },
 };
 
 export default function RewardBadge({ insigniaId, size = "md", unlocked = false }) {
