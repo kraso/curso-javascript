@@ -25,6 +25,21 @@ export default function ExamEditor({ ejercicio, onResolver }) {
     setRespuestas(nuevas);
   };
 
+  const handleKeyDown = useCallback((e, index) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const ta = e.target;
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const value = respuestas[index] || "";
+      const newValue = value.substring(0, start) + "  " + value.substring(end);
+      actualizarRespuesta(index, newValue);
+      requestAnimationFrame(() => {
+        ta.selectionStart = ta.selectionEnd = start + 2;
+      });
+    }
+  }, [respuestas]);
+
   const ejecutarExamen = useCallback(() => {
     setEjecutando(true);
     setResultados(null);
@@ -227,6 +242,7 @@ export default function ExamEditor({ ejercicio, onResolver }) {
                     <textarea
                       value={respuestas[i] || ""}
                       onChange={(e) => actualizarRespuesta(i, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(e, i)}
                       className="editor-textarea"
                       spellCheck={false}
                       autoCapitalize="off"
