@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import LessonCard from "../components/course/LessonCard";
 import SidebarNavigation from "../components/course/SidebarNavigation";
 import ProgressBar from "../components/ui/ProgressBar";
-import { lecciones, modulos, getProgresoTotal, getModulosPendientes, isCursoCompletado } from "../data/lessons";
+import { lecciones, modulos, getProgresoTotal, getExamenRequisito, getLeccionPorId, isCursoCompletado } from "../data/lessons";
 
 export const meta = () => [
   {
@@ -30,7 +30,6 @@ export default function CursoIndex() {
   const { progreso } = useOutletContext();
   const leccionesCompletadas = progreso?.leccionesCompletadas || [];
   const porcentaje = getProgresoTotal(leccionesCompletadas);
-  const modulosPendientes = getModulosPendientes(leccionesCompletadas);
   const cursoCompletado = isCursoCompletado(leccionesCompletadas);
 
   let cardIndex = 0;
@@ -50,27 +49,6 @@ export default function CursoIndex() {
         <ProgressBar porcentaje={porcentaje} />
       </motion.div>
 
-      {modulosPendientes.length > 0 && (
-        <motion.div custom={2} initial="hidden" animate="visible" variants={fadeUp} className="mb-6">
-          {modulosPendientes.map(({ modulo, examenTitulo }) => (
-            <div
-              key={modulo.id}
-              className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 mb-3"
-            >
-              <AlertTriangle size={18} className="text-amber-400 mt-0.5 shrink-0" />
-              <div className="text-sm">
-                <p className="text-amber-300 font-medium">
-                  Módulo {modulo.id}: {modulo.nombre} — recomendamos aprobar el examen anterior
-                </p>
-                <p className="text-zinc-400 mt-1">
-                  Para un aprendizaje óptimo, completa <Link to={`/curso/${examenTitulo.includes("Fundamentos") ? "examen-modulo-1" : examenTitulo.includes("Intermedio") ? "examen-modulo-2" : examenTitulo.includes("Avanzado") ? "examen-modulo-3" : "examen-modulo-4"}`} className="text-primary hover:underline">{examenTitulo}</Link> antes de continuar.
-                </p>
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      )}
-
       {cursoCompletado && (
         <motion.div custom={2} initial="hidden" animate="visible" variants={fadeUp} className="mb-6">
           <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
@@ -88,6 +66,11 @@ export default function CursoIndex() {
             const modLecciones = lecciones
               .filter((l) => l.modulo === modulo.id)
               .sort((a, b) => a.orden - b.orden);
+
+            const examenId = getExamenRequisito(modulo.id);
+            const examenAprobado = examenId ? leccionesCompletadas.includes(examenId) : true;
+            const examen = examenId ? getLeccionPorId(examenId) : null;
+
             return (
               <motion.div
                 key={modulo.id}
@@ -97,6 +80,20 @@ export default function CursoIndex() {
                 variants={fadeUp}
                 className="mb-8"
               >
+                {!examenAprobado && examen && (
+                  <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 mb-4">
+                    <AlertTriangle size={18} className="text-amber-400 mt-0.5 shrink-0" />
+                    <div className="text-sm">
+                      <p className="text-amber-300 font-medium">
+                        Recomendamos aprobar el examen anterior para continuar
+                      </p>
+                      <p className="text-zinc-400 mt-1">
+                        Completa <Link to={`/curso/${examenId}`} className="text-primary hover:underline">{examen.titulo}</Link> antes de avanzar a este módulo.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                     <BookOpen size={20} className="text-primary" />
