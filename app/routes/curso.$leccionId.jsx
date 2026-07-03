@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useOutletContext, useLoaderData } from "@remix-run/react";
-import { ArrowLeft, ArrowRight, Clock, Trophy, CheckCircle2, BookOpen, Award } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Trophy, CheckCircle2, BookOpen, Award, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import CodeEditor from "../components/course/CodeEditor";
 import ExamEditor from "../components/course/ExamEditor";
@@ -8,7 +8,7 @@ import RewardBadge from "../components/course/RewardBadge";
 import LessonComplete from "../components/course/LessonComplete";
 import SyncToast from "../components/course/SyncToast";
 import Button from "../components/ui/Button";
-import { getLeccionPorId, getSiguienteLeccion, getLeccionAnterior } from "../data/lessons";
+import { getLeccionPorId, getSiguienteLeccion, getLeccionAnterior, isModuloDesbloqueado } from "../data/lessons";
 import { parseMarkdown } from "../utils/syntax";
 import { isSupabaseConfigured } from "../lib/supabase";
 
@@ -107,6 +107,22 @@ export default function LeccionRoute() {
             Volver al curso
           </Link>
         </motion.div>
+
+        {!isModuloDesbloqueado(leccion.modulo, leccionesCompletadas) && (
+          <motion.div custom={0.5} variants={fadeSlide} className="mb-6">
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+              <AlertTriangle size={18} className="text-amber-400 mt-0.5 shrink-0" />
+              <div className="text-sm">
+                <p className="text-amber-300 font-medium">
+                  Módulo {leccion.modulo}: {leccion.moduloNombre}
+                </p>
+                <p className="text-zinc-400 mt-1">
+                  Recomendamos aprobar el examen del módulo anterior antes de continuar con esta lección.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Cabecera de la lección */}
         <motion.div custom={1} variants={fadeSlide} className="mb-8">

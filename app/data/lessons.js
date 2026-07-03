@@ -2380,3 +2380,36 @@ export function getLeccionAnterior(leccionActual) {
 export function getProgresoTotal(leccionesCompletadas) {
   return Math.round((leccionesCompletadas.length / lecciones.length) * 100);
 }
+
+// ===== EXAM GATING HELPERS =====
+
+const examenRequisito = {
+  2: "examen-modulo-1",
+  3: "examen-modulo-2",
+  4: "examen-modulo-3",
+};
+
+export function getExamenRequisito(moduloId) {
+  return examenRequisito[moduloId] || null;
+}
+
+export function isModuloDesbloqueado(moduloId, leccionesCompletadas) {
+  if (moduloId <= 1) return true;
+  const examenId = examenRequisito[moduloId];
+  return examenId ? leccionesCompletadas.includes(examenId) : true;
+}
+
+export function getModulosPendientes(leccionesCompletadas) {
+  return modulos
+    .filter((m) => !isModuloDesbloqueado(m.id, leccionesCompletadas))
+    .map((m) => ({
+      modulo: m,
+      examenRequisito: examenRequisito[m.id],
+      examenTitulo: getLeccionPorId(examenRequisito[m.id])?.titulo || "",
+    }));
+}
+
+export function isCursoCompletado(leccionesCompletadas) {
+  const examenes = ["examen-modulo-1", "examen-modulo-2", "examen-modulo-3", "examen-modulo-4"];
+  return examenes.every((id) => leccionesCompletadas.includes(id));
+}
