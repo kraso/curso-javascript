@@ -46,11 +46,21 @@ export default function Index() {
       <div className="relative z-10">
         <Navbar />
         <main id="main-content">
-          <Hero />
-          <Features />
-          <CourseOutline />
-          <Resources />
-          <CTA />
+          <section id="inicio">
+            <Hero />
+          </section>
+          <section id="caracteristicas">
+            <Features />
+          </section>
+          <section id="temario">
+            <CourseOutline />
+          </section>
+          <section id="recursos">
+            <Resources />
+          </section>
+          <section id="empezar">
+            <CTA />
+          </section>
         </main>
         <Footer />
       </div>

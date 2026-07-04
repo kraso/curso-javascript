@@ -2,7 +2,8 @@ import { Link, useLocation, useNavigate } from "@remix-run/react";
 import { useState, useRef, useEffect } from "react";
 import {
   Menu, X, User, Code2, LogOut,
-  BookOpen, ChevronDown, Trophy, Sun, Moon
+  BookOpen, ChevronDown, Trophy, Sun, Moon,
+  Home, Layers, FolderOpen, Rocket
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuth } from "../../hooks/useAuth";
@@ -47,14 +48,29 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
+  const scrollToSection = (sectionId) => {
+    setMobileOpen(false);
+    if (location.pathname === "/") {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate(`/#${sectionId}`);
+    }
+  };
+
   const userName = user?.user_metadata?.nombre || user?.email?.split("@")[0] || "Usuario";
   const userEmail = user?.email || "";
   const userInitial = userName.charAt(0).toUpperCase();
   const totalLecciones = progreso?.leccionesCompletadas?.length || 0;
   const totalInsignias = progreso?.insignias?.length || 0;
 
+  const isLanding = location.pathname === "/";
+
   const navLinks = [
-    { to: "/curso", label: "Curso", icon: BookOpen },
+    { label: "Inicio", icon: Home, onClick: () => scrollToSection("inicio"), active: isLanding },
+    { label: "Características", icon: Layers, onClick: () => scrollToSection("caracteristicas"), active: isLanding },
+    { label: "Temario", icon: FolderOpen, onClick: () => scrollToSection("temario"), active: isLanding },
+    { label: "Curso", to: "/curso", icon: BookOpen },
   ];
 
   return (
@@ -73,21 +89,35 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={cn(
-                  "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                  location.pathname.startsWith(link.to)
-                    ? "bg-dark-700 text-primary"
-                    : "text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50"
-                )}
-              >
-                <link.icon size={15} />
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.to ? (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={cn(
+                    "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                    location.pathname.startsWith(link.to)
+                      ? "bg-dark-700 text-primary"
+                      : "text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50"
+                  )}
+                >
+                  <link.icon size={15} />
+                  {link.label}
+                </Link>
+              ) : (
+                <button
+                  key={link.label}
+                  onClick={link.onClick}
+                  className={cn(
+                    "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                    "text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50"
+                  )}
+                >
+                  <link.icon size={15} />
+                  {link.label}
+                </button>
+              )
+            )}
 
             {/* Theme toggle */}
             <button
@@ -97,6 +127,15 @@ export default function Navbar() {
             >
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+
+            {/* CTA Empezar Curso */}
+            <Link
+              to="/curso"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-primary hover:bg-primary-dark text-dark-900 transition-colors ml-2"
+            >
+              <Rocket size={15} />
+              Empezar Curso
+            </Link>
 
             {/* Usuario no logueado */}
             {!loading && !user && (
@@ -275,22 +314,46 @@ export default function Navbar() {
               {theme === "dark" ? "Modo claro" : "Modo oscuro"}
             </button>
 
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
-                  location.pathname.startsWith(link.to)
-                    ? "bg-dark-700 text-primary"
-                    : "text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50"
-                )}
-              >
-                <link.icon size={16} />
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.to ? (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+                    location.pathname.startsWith(link.to)
+                      ? "bg-dark-700 text-primary"
+                      : "text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50"
+                  )}
+                >
+                  <link.icon size={16} />
+                  {link.label}
+                </Link>
+              ) : (
+                <button
+                  key={link.label}
+                  onClick={link.onClick}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors w-full text-left",
+                    "text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50"
+                  )}
+                >
+                  <link.icon size={16} />
+                  {link.label}
+                </button>
+              )
+            )}
+
+            {/* CTA Empezar Curso mobile */}
+            <Link
+              to="/curso"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium bg-primary text-dark-900 text-center mt-2"
+            >
+              <Rocket size={16} />
+              Empezar Curso
+            </Link>
 
             {!loading && !user && (
               <>
