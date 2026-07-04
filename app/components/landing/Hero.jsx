@@ -20,6 +20,23 @@ export default function Hero() {
           <span className="text-gradient">está en tus manos</span>
         </h1>
 
+        {/* Video preview */}
+        <div className="max-w-3xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: "0.05s" }}>
+          <div className="relative rounded-2xl overflow-hidden border border-zinc-700/50 shadow-2xl shadow-primary/5 group">
+            <video
+              src="/curso-js.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-auto block"
+              preload="metadata"
+            />
+            {/* Glow overlay */}
+            <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/5" />
+          </div>
+        </div>
+
         {/* Subtitle */}
         <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-slide-up text-balance" style={{ animationDelay: "0.1s" }}>
           Aprende el lenguaje más popular del mundo de forma interactiva.
