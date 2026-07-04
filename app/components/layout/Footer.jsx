@@ -1,4 +1,4 @@
-import { Code2, Heart, ExternalLink } from "lucide-react";
+import { Code2, Heart, ExternalLink, Mail, Github } from "lucide-react";
 import { Link } from "@remix-run/react";
 
 const PROJECT_URL = "https://javascript-learning-app.dev";
@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-zinc-800 bg-dark-900/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -56,12 +56,35 @@ export default function Footer() {
                 <ExternalLink size={11} />
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/kraso"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-zinc-500 hover:text-primary text-sm transition-colors"
               >
                 GitHub
+                <ExternalLink size={11} />
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-zinc-100 font-semibold mb-4">Contacto</h3>
+            <div className="flex flex-col gap-2.5">
+              <a
+                href="mailto:marcoscalabresibaniez@gmail.com"
+                className="flex items-center gap-2 text-zinc-500 hover:text-primary text-sm transition-colors"
+              >
+                <Mail size={14} />
+                marcoscalabresibaniez@gmail.com
+              </a>
+              <a
+                href="https://github.com/kraso"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-zinc-500 hover:text-primary text-sm transition-colors"
+              >
+                <Github size={14} />
+               github.com/kraso
                 <ExternalLink size={11} />
               </a>
             </div>
