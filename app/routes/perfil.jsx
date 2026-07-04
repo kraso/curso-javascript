@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@remix-run/react";
 import {
   ArrowLeft, User, Mail, Save, BookOpen,
   Trophy, Clock, AlertCircle, CheckCircle2, Camera,
-  Key, Shield
+  Key, Shield, Phone, AtSign
 } from "lucide-react";
 import SkipLink from "../components/SkipLink";
 import Button from "../components/ui/Button";
@@ -23,6 +23,8 @@ export default function Perfil() {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef(null);
+  const [alias, setAlias] = useState("");
+  const [telefono, setTelefono] = useState("");
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -45,6 +47,8 @@ export default function Perfil() {
     if (user) {
       setNombre(user.user_metadata?.nombre || "");
       setAvatarUrl(user.user_metadata?.avatar_url || null);
+      setAlias(user.user_metadata?.alias || "");
+      setTelefono(user.user_metadata?.phone || "");
     }
   }, [user]);
 
@@ -117,7 +121,7 @@ export default function Perfil() {
     setSaved(false);
 
     const { error: updateError } = await supabase.auth.updateUser({
-      data: { nombre },
+      data: { nombre, alias, phone: telefono },
     });
 
     if (updateError) {
@@ -304,6 +308,40 @@ export default function Perfil() {
                   className="w-full pl-10 pr-4 py-3 bg-dark-700 border border-zinc-600 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary transition-colors"
                   placeholder="Tu nombre"
                   required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="alias" className="block text-sm font-medium text-zinc-300 mb-2">
+                Alias
+              </label>
+              <div className="relative">
+                <AtSign size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                <input
+                  id="alias"
+                  type="text"
+                  value={alias}
+                  onChange={(e) => setAlias(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-dark-700 border border-zinc-600 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary transition-colors"
+                  placeholder="Tu alias"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="telefono" className="block text-sm font-medium text-zinc-300 mb-2">
+                Teléfono
+              </label>
+              <div className="relative">
+                <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                <input
+                  id="telefono"
+                  type="tel"
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-dark-700 border border-zinc-600 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-primary transition-colors"
+                  placeholder="Tu teléfono"
                 />
               </div>
             </div>
