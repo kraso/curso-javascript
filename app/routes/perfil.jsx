@@ -45,7 +45,7 @@ export default function Perfil() {
 
   useEffect(() => {
     if (user) {
-      setNombre(user.user_metadata?.nombre || "");
+      setNombre(user.user_metadata?.full_name || user.user_metadata?.nombre || "");
       setAvatarUrl(user.user_metadata?.avatar_url || null);
       setAlias(user.user_metadata?.alias || "");
       setTelefono(user.user_metadata?.phone || "");
@@ -62,7 +62,7 @@ export default function Perfil() {
 
   if (!user) return null;
 
-  const userName = user.user_metadata?.nombre || "Usuario";
+  const userName = user.user_metadata?.full_name || user.user_metadata?.nombre || "Usuario";
   const userInitial = userName.charAt(0).toUpperCase();
   const totalLecciones = progreso?.leccionesCompletadas?.length || 0;
   const totalInsignias = progreso?.insignias?.length || 0;
@@ -121,7 +121,7 @@ export default function Perfil() {
     setSaved(false);
 
     const { error: updateError } = await supabase.auth.updateUser({
-      data: { nombre, alias, phone: telefono },
+      data: { full_name: nombre, alias, phone: telefono },
     });
 
     if (updateError) {

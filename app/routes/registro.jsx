@@ -36,7 +36,7 @@ export default function Registro() {
     if (!validar()) return;
     setWarning(null);
     try {
-      const result = await signUp(email, password, { data: { nombre } });
+      const result = await signUp(email, password, { data: { full_name: nombre } });
       if (typeof result === "string") {
         setWarning(result);
         return;
