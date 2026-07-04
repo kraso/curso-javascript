@@ -5,6 +5,7 @@ import AnimatedBackground from "../components/landing/AnimatedBackground";
 import Hero from "../components/landing/Hero";
 import Features from "../components/landing/Features";
 import CourseOutline from "../components/landing/CourseOutline";
+import Resources from "../components/landing/Resources";
 import CTA from "../components/landing/CTA";
 import JsonLd from "../components/JsonLd";
 
@@ -48,6 +49,7 @@ export default function Index() {
           <Hero />
           <Features />
           <CourseOutline />
+          <Resources />
           <CTA />
         </main>
         <Footer />
