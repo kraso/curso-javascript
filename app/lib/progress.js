@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from "./supabase";
+import { APP_ID } from "./constants";
 
 const STORAGE_KEY = "curso-js-progress";
 
@@ -38,7 +39,8 @@ export async function syncProgresoFromSupabase(userId) {
     const { data, error } = await supabase
       .from("progreso_usuario")
       .select("leccion_id, insignias, puntos, tiempo_total")
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("app_id", APP_ID);
 
     if (error) throw error;
 
@@ -63,11 +65,12 @@ export async function syncLeccionToSupabase(userId, leccionId, insignia) {
     const { error } = await supabase.from("progreso_usuario").upsert(
       {
         user_id: userId,
+        app_id: APP_ID,
         leccion_id: leccionId,
         insignias: insignia ? [insignia] : [],
         puntos: insignia ? 10 : 5,
       },
-      { onConflict: "user_id,leccion_id" }
+      { onConflict: "user_id,app_id,leccion_id" }
     );
 
     if (error) throw error;
@@ -88,7 +91,8 @@ export async function migrarProgresoLocalASupabase(userId) {
     const { data: existing, error: checkErr } = await supabase
       .from("progreso_usuario")
       .select("leccion_id")
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("app_id", APP_ID);
 
     if (checkErr) throw checkErr;
 
@@ -99,6 +103,7 @@ export async function migrarProgresoLocalASupabase(userId) {
 
     const rows = toMigrate.map((leccionId) => ({
       user_id: userId,
+      app_id: APP_ID,
       leccion_id: leccionId,
       insignias: local.insignias.includes(leccionId) ? [leccionId] : [],
       puntos: local.insignias.includes(leccionId) ? 10 : 5,
@@ -107,7 +112,7 @@ export async function migrarProgresoLocalASupabase(userId) {
 
     const { error: insertErr } = await supabase
       .from("progreso_usuario")
-      .upsert(rows, { onConflict: "user_id,leccion_id" });
+      .upsert(rows, { onConflict: "user_id,app_id,leccion_id" });
 
     if (insertErr) throw insertErr;
 
@@ -178,6 +183,7 @@ export async function sincronizarProgresoASupabase(userId) {
 
     const rows = local.leccionesCompletadas.map((leccionId) => ({
       user_id: userId,
+      app_id: APP_ID,
       leccion_id: leccionId,
       insignias: local.insignias.includes(leccionId) ? [leccionId] : [],
       puntos: local.insignias.includes(leccionId) ? 10 : 5,
@@ -186,7 +192,7 @@ export async function sincronizarProgresoASupabase(userId) {
 
     const { error } = await supabase
       .from("progreso_usuario")
-      .upsert(rows, { onConflict: "user_id,leccion_id" });
+      .upsert(rows, { onConflict: "user_id,app_id,leccion_id" });
 
     if (error) throw error;
     return true;
