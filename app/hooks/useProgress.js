@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   getProgresoLocal,
+  saveProgresoLocal,
   marcarLeccionCompletada,
   getInsignias,
   getTiempoTotal,
@@ -32,18 +33,22 @@ export function useProgress(userId) {
           return;
         }
 
-        setProgreso((local) => ({
-          leccionesCompletadas: [
-            ...new Set([
-              ...local.leccionesCompletadas,
-              ...supabaseData.leccionesCompletadas,
-            ]),
-          ],
-          insignias: [
-            ...new Set([...local.insignias, ...supabaseData.insignias]),
-          ],
-          tiempoTotal: Math.max(local.tiempoTotal, supabaseData.tiempoTotal),
-        }));
+        setProgreso((local) => {
+          const merged = {
+            leccionesCompletadas: [
+              ...new Set([
+                ...local.leccionesCompletadas,
+                ...supabaseData.leccionesCompletadas,
+              ]),
+            ],
+            insignias: [
+              ...new Set([...local.insignias, ...supabaseData.insignias]),
+            ],
+            tiempoTotal: Math.max(local.tiempoTotal, supabaseData.tiempoTotal),
+          };
+          saveProgresoLocal(merged);
+          return merged;
+        });
       });
     }
   }, [userId]);

@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils";
 import { useAuth } from "../../hooks/useAuth";
 import { useProgress } from "../../hooks/useProgress";
 import { useTheme } from "../../hooks/useTheme";
+import { sincronizarProgresoASupabase, limpiarProgresoLocal } from "../../lib/progress";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -37,9 +38,13 @@ export default function Navbar() {
   }, [location.pathname]);
 
   const handleLogout = async () => {
+    if (user?.id) {
+      await sincronizarProgresoASupabase(user.id);
+    }
+    limpiarProgresoLocal();
     await signOut();
     setDropdownOpen(false);
-    navigate("/");
+    window.location.href = "/";
   };
 
   const userName = user?.user_metadata?.nombre || user?.email?.split("@")[0] || "Usuario";

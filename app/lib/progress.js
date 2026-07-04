@@ -166,3 +166,41 @@ export function actualizarTiempo(segundos) {
 export function reiniciarProgreso() {
   saveProgresoLocal({ leccionesCompletadas: [], insignias: [], tiempoTotal: 0 });
 }
+
+// ===== SYNC ON LOGOUT =====
+
+export async function sincronizarProgresoASupabase(userId) {
+  if (!isSupabaseConfigured() || !userId) return false;
+
+  try {
+    const local = getProgresoLocal();
+    if (!local.leccionesCompletadas.length) return true;
+
+    const rows = local.leccionesCompletadas.map((leccionId) => ({
+      user_id: userId,
+      leccion_id: leccionId,
+      insignias: local.insignias.includes(leccionId) ? [leccionId] : [],
+      puntos: local.insignias.includes(leccionId) ? 10 : 5,
+      tiempo_total: Math.floor(local.tiempoTotal / local.leccionesCompletadas.length),
+    }));
+
+    const { error } = await supabase
+      .from("progreso_usuario")
+      .upsert(rows, { onConflict: "user_id,leccion_id" });
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error("Error sincronizando progreso al cerrar sesión:", error);
+    return false;
+  }
+}
+
+export function limpiarProgresoLocal() {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.error("Error limpiando progreso local:", error);
+  }
+}
