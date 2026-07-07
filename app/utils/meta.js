@@ -1,5 +1,6 @@
 const PROJECT_URL = "https://javascript-learning-app.dev";
 const OG_IMAGE = `${PROJECT_URL}/og-image.png`;
+const FB_APP_ID = "1525887815232269";
 
 export function pageMeta({ title, description, url, type = "website" }) {
   return [
@@ -14,7 +15,7 @@ export function pageMeta({ title, description, url, type = "website" }) {
     { property: "og:image:height", content: "630" },
     { property: "og:image:type", content: "image/png" },
     { property: "og:locale", content: "es_ES" },
-    { property: "fb:app_id", content: "123456789012345" },
+    { property: "fb:app_id", content: FB_APP_ID },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
