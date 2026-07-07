@@ -4,16 +4,13 @@ import { Code2, Mail, Lock, ArrowRight, AlertCircle, AlertTriangle } from "lucid
 import SkipLink from "../components/SkipLink";
 import Button from "../components/ui/Button";
 import { useAuth } from "../hooks/useAuth";
-import { OG_IMAGE_TAGS } from "../utils/meta";
+import { pageMeta } from "../utils/meta";
 
-export const meta = () => [
-  { title: "Iniciar sesión - JavaScript está en tus manos" },
-  {
-    name: "description",
-    content: "Accede a tu cuenta para continuar con el curso de JavaScript.",
-  },
-  ...OG_IMAGE_TAGS,
-];
+export const meta = () => pageMeta({
+  title: "Iniciar sesión - JavaScript está en tus manos",
+  description: "Accede a tu cuenta para continuar con el curso de JavaScript.",
+  url: "https://javascript-learning-app.dev/login",
+});
 
 export default function Login() {
   const [email, setEmail] = useState("");

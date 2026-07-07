@@ -11,7 +11,7 @@ import Button from "../components/ui/Button";
 import { getLeccionPorId, getSiguienteLeccion, getLeccionAnterior, isModuloDesbloqueado } from "../data/lessons";
 import { parseMarkdown } from "../utils/syntax";
 import { isSupabaseConfigured } from "../lib/supabase";
-import { OG_IMAGE_TAGS } from "../utils/meta";
+import { pageMeta } from "../utils/meta";
 
 export const loader = ({ params }) => {
   const leccion = getLeccionPorId(params.leccionId);
@@ -21,19 +21,20 @@ export const loader = ({ params }) => {
   return { leccion };
 };
 
-export const meta = ({ data }) => {
+export const meta = ({ data, params }) => {
   if (!data?.leccion) {
-    return [{ title: "Lección no encontrada - JavaScript está en tus manos" }];
+    return pageMeta({
+      title: "Lección no encontrada - JavaScript está en tus manos",
+      description: "La lección que buscas no existe o ha sido movida.",
+      url: `https://javascript-learning-app.dev/curso/${params.leccionId}`,
+    });
   }
-  return [
-    { title: `${data.leccion.titulo} - JavaScript está en tus manos` },
-    { name: "description", content: data.leccion.descripcion },
-    { property: "og:title", content: data.leccion.titulo },
-    { property: "og:description", content: data.leccion.descripcion },
-    { property: "og:type", content: "article" },
-    { name: "robots", content: "index, follow" },
-    ...OG_IMAGE_TAGS,
-  ];
+  return pageMeta({
+    title: `${data.leccion.titulo} - JavaScript está en tus manos`,
+    description: data.leccion.descripcion,
+    url: `https://javascript-learning-app.dev/curso/${params.leccionId}`,
+    type: "article",
+  });
 };
 
 const fadeSlide = {

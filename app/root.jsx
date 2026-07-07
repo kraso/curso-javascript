@@ -7,29 +7,21 @@ import {
   Link,
 } from "@remix-run/react";
 import "./styles/global.css";
-import { OG_IMAGE_TAGS } from "./utils/meta";
-
-const PROJECT_URL = "https://javascript-learning-app.dev";
+import { pageMeta } from "./utils/meta";
 
 export const meta = () => {
   return [
-    { title: "JavaScript está en tus manos - Curso Interactivo" },
-    { name: "description", content: "Aprende JavaScript de forma interactiva con ejercicios prácticos, un editor de código en el navegador y un sistema de progreso gamificado." },
     { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
     { name: "mobile-web-app-capable", content: "yes" },
     { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
     { name: "author", content: "Marcos Calabrés Ibáñez" },
     { name: "robots", content: "index, follow" },
     { name: "theme-color", content: "#0a0a0a" },
-    { property: "og:title", content: "JavaScript está en tus manos - Curso Interactivo" },
-    { property: "og:description", content: "Aprende JavaScript de forma interactiva con ejercicios prácticos y sistema de progreso." },
-    { property: "og:url", content: PROJECT_URL },
-    { property: "og:type", content: "website" },
-    ...OG_IMAGE_TAGS,
-    { property: "og:locale", content: "es_ES" },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: "JavaScript está en tus manos" },
-    { name: "twitter:description", content: "Curso interactivo de JavaScript con ejercicios prácticos." },
+    ...pageMeta({
+      title: "JavaScript está en tus manos - Curso Interactivo",
+      description: "Aprende JavaScript de forma interactiva con ejercicios prácticos, un editor de código en el navegador y un sistema de progreso gamificado.",
+      url: "https://javascript-learning-app.dev",
+    }),
   ];
 };
 
