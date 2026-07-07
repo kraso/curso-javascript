@@ -24,15 +24,15 @@ export const meta = () => {
     { property: "og:description", content: "Aprende JavaScript de forma interactiva con ejercicios prácticos y sistema de progreso." },
     { property: "og:url", content: PROJECT_URL },
     { property: "og:type", content: "website" },
-    { property: "og:image", content: `${PROJECT_URL}/og-image.svg` },
+    { property: "og:image", content: `${PROJECT_URL}/og-image.png` },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
-    { property: "og:image:type", content: "image/svg+xml" },
+    { property: "og:image:type", content: "image/png" },
     { property: "og:locale", content: "es_ES" },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "JavaScript está en tus manos" },
     { name: "twitter:description", content: "Curso interactivo de JavaScript con ejercicios prácticos." },
-    { name: "twitter:image", content: `${PROJECT_URL}/og-image.svg` },
+    { name: "twitter:image", content: `${PROJECT_URL}/og-image.png` },
   ];
 };
 
