@@ -9,6 +9,8 @@ import {
 import "./styles/global.css";
 import { pageMeta } from "./utils/meta";
 
+const PROJECT_URL = "https://javascript-learning-app.dev";
+
 export const meta = () => {
   return [
     { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
