@@ -14,6 +14,7 @@ export function pageMeta({ title, description, url, type = "website" }) {
     { property: "og:image:height", content: "630" },
     { property: "og:image:type", content: "image/png" },
     { property: "og:locale", content: "es_ES" },
+    { property: "fb:app_id", content: "123456789012345" },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
