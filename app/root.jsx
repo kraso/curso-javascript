@@ -7,6 +7,7 @@ import {
   Link,
 } from "@remix-run/react";
 import "./styles/global.css";
+import { OG_IMAGE_TAGS } from "./utils/meta";
 
 const PROJECT_URL = "https://javascript-learning-app.dev";
 
@@ -24,15 +25,11 @@ export const meta = () => {
     { property: "og:description", content: "Aprende JavaScript de forma interactiva con ejercicios prácticos y sistema de progreso." },
     { property: "og:url", content: PROJECT_URL },
     { property: "og:type", content: "website" },
-    { property: "og:image", content: `${PROJECT_URL}/og-image.png` },
-    { property: "og:image:width", content: "1200" },
-    { property: "og:image:height", content: "630" },
-    { property: "og:image:type", content: "image/png" },
+    ...OG_IMAGE_TAGS,
     { property: "og:locale", content: "es_ES" },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "JavaScript está en tus manos" },
     { name: "twitter:description", content: "Curso interactivo de JavaScript con ejercicios prácticos." },
-    { name: "twitter:image", content: `${PROJECT_URL}/og-image.png` },
   ];
 };
 

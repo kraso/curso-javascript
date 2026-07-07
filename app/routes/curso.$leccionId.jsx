@@ -11,6 +11,7 @@ import Button from "../components/ui/Button";
 import { getLeccionPorId, getSiguienteLeccion, getLeccionAnterior, isModuloDesbloqueado } from "../data/lessons";
 import { parseMarkdown } from "../utils/syntax";
 import { isSupabaseConfigured } from "../lib/supabase";
+import { OG_IMAGE_TAGS } from "../utils/meta";
 
 export const loader = ({ params }) => {
   const leccion = getLeccionPorId(params.leccionId);
@@ -31,6 +32,7 @@ export const meta = ({ data }) => {
     { property: "og:description", content: data.leccion.descripcion },
     { property: "og:type", content: "article" },
     { name: "robots", content: "index, follow" },
+    ...OG_IMAGE_TAGS,
   ];
 };
 

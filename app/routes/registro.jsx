@@ -4,6 +4,7 @@ import { Code2, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2, AlertTr
 import SkipLink from "../components/SkipLink";
 import Button from "../components/ui/Button";
 import { useAuth } from "../hooks/useAuth";
+import { OG_IMAGE_TAGS } from "../utils/meta";
 
 export const meta = () => [
   { title: "Crear cuenta - JavaScript está en tus manos" },
@@ -11,6 +12,7 @@ export const meta = () => [
     name: "description",
     content: "Regístrate gratis y empieza a aprender JavaScript hoy.",
   },
+  ...OG_IMAGE_TAGS,
 ];
 
 export default function Registro() {
