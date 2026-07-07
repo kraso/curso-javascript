@@ -11,7 +11,7 @@ import Button from "../components/ui/Button";
 import { getLeccionPorId, getSiguienteLeccion, getLeccionAnterior, isModuloDesbloqueado } from "../data/lessons";
 import { parseMarkdown } from "../utils/syntax";
 import { isSupabaseConfigured } from "../lib/supabase";
-import { pageMeta } from "../utils/meta";
+import { pageMeta, PROJECT_URL } from "../utils/meta";
 
 export const loader = ({ params }) => {
   const leccion = getLeccionPorId(params.leccionId);
@@ -26,7 +26,7 @@ export const meta = ({ data, params }) => {
     return pageMeta({
       title: "Lección no encontrada - JavaScript está en tus manos",
       description: "La lección que buscas no existe o ha sido movida.",
-      url: `https://javascript-learning-app.dev/curso/${params.leccionId}`,
+      url: `${PROJECT_URL}/curso/${params.leccionId}`,
     });
   }
   return pageMeta({

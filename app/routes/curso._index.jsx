@@ -5,12 +5,12 @@ import LessonCard from "../components/course/LessonCard";
 import SidebarNavigation from "../components/course/SidebarNavigation";
 import ProgressBar from "../components/ui/ProgressBar";
 import { lecciones, modulos, getProgresoTotal, getExamenRequisito, getLeccionPorId, isCursoCompletado } from "../data/lessons";
-import { pageMeta } from "../utils/meta";
+import { pageMeta, PROJECT_URL } from "../utils/meta";
 
 export const meta = () => pageMeta({
   title: "Curso - JavaScript está en tus manos",
   description: "27 lecciones de JavaScript organizadas en 4 módulos. Aprende desde fundamentos hasta conceptos avanzados.",
-  url: "https://javascript-learning-app.dev/curso",
+  url: `${PROJECT_URL}/curso`,
 });
 
 const fadeUp = {

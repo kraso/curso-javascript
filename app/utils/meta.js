@@ -1,4 +1,4 @@
-const PROJECT_URL = "https://javascript-learning-app.dev";
+export const PROJECT_URL = "https://www.javascript-learning-app.dev";
 const OG_IMAGE = `${PROJECT_URL}/og-image.png`;
 const FB_APP_ID = "1525887815232269";
 

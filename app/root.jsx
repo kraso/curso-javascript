@@ -7,9 +7,7 @@ import {
   Link,
 } from "@remix-run/react";
 import "./styles/global.css";
-import { pageMeta } from "./utils/meta";
-
-const PROJECT_URL = "https://javascript-learning-app.dev";
+import { pageMeta, PROJECT_URL } from "./utils/meta";
 
 export const meta = () => {
   return [
@@ -22,7 +20,7 @@ export const meta = () => {
     ...pageMeta({
       title: "JavaScript está en tus manos - Curso Interactivo",
       description: "Aprende JavaScript de forma interactiva con ejercicios prácticos, un editor de código en el navegador y un sistema de progreso gamificado.",
-      url: "https://javascript-learning-app.dev",
+      url: PROJECT_URL,
     }),
   ];
 };

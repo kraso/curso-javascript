@@ -8,13 +8,13 @@ import CourseOutline from "../components/landing/CourseOutline";
 import Resources from "../components/landing/Resources";
 import CTA from "../components/landing/CTA";
 import JsonLd from "../components/JsonLd";
-import { pageMeta } from "../utils/meta";
+import { pageMeta, PROJECT_URL } from "../utils/meta";
 
 export const meta = () => {
   return pageMeta({
     title: "JavaScript está en tus manos - Curso Interactivo",
     description: "Aprende JavaScript de forma interactiva con ejercicios prácticos, un editor de código en el navegador y un sistema de progreso gamificado.",
-    url: "https://javascript-learning-app.dev",
+    url: PROJECT_URL,
   });
 };
 

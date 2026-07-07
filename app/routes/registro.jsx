@@ -4,12 +4,12 @@ import { Code2, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2, AlertTr
 import SkipLink from "../components/SkipLink";
 import Button from "../components/ui/Button";
 import { useAuth } from "../hooks/useAuth";
-import { pageMeta } from "../utils/meta";
+import { pageMeta, PROJECT_URL } from "../utils/meta";
 
 export const meta = () => pageMeta({
   title: "Crear cuenta - JavaScript está en tus manos",
   description: "Regístrate gratis y empieza a aprender JavaScript hoy.",
-  url: "https://javascript-learning-app.dev/registro",
+  url: `${PROJECT_URL}/registro`,
 });
 
 export default function Registro() {
