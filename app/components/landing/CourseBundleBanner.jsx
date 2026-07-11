@@ -26,7 +26,7 @@ const COURSES = [
     id: "ts",
     name: "TypeScript",
     url: "https://typescript.javascript-learning-app.dev/curso",
-    image: "https://typescript.javascript-learning-app.dev/og-image.svg",
+    image: "https://typescript.javascript-learning-app.dev/og-image.png",
     color: "from-sky-500 to-cyan-400",
     borderColor: "border-sky-500/30",
     glowColor: "hover:shadow-sky-500/10",
