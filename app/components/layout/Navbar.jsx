@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   Menu, X, User, Code2, LogOut,
   BookOpen, ChevronDown, Trophy, Sun, Moon,
-  Home, Layers, FolderOpen, Rocket
+  Home, Layers, FolderOpen, Rocket, ExternalLink
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuth } from "../../hooks/useAuth";
@@ -252,6 +252,34 @@ export default function Navbar() {
                       </Link>
                     </div>
 
+                    {/* Mis Cursos */}
+                    <div className="p-1.5 border-t border-zinc-700/50">
+                      <p className="px-3 py-1.5 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                        Mis Cursos
+                      </p>
+                      <a
+                        href="https://javascript-learning-app.dev"
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
+                      >
+                        <ExternalLink size={16} className="text-zinc-500" />
+                        JavaScript
+                      </a>
+                      <a
+                        href="https://react-learning-app.dev"
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
+                      >
+                        <ExternalLink size={16} className="text-zinc-500" />
+                        React
+                      </a>
+                      <a
+                        href="https://typescript.javascript-learning-app.dev"
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
+                      >
+                        <ExternalLink size={16} className="text-zinc-500" />
+                        TypeScript
+                      </a>
+                    </div>
+
                     {/* Logout */}
                     <div className="p-1.5 border-t border-zinc-700/50">
                       <button
@@ -384,6 +412,30 @@ export default function Navbar() {
                   <User size={16} />
                   Mi perfil
                 </Link>
+                <div className="px-4 py-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  Mis Cursos
+                </div>
+                <a
+                  href="https://javascript-learning-app.dev"
+                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
+                >
+                  <ExternalLink size={16} />
+                  JavaScript
+                </a>
+                <a
+                  href="https://react-learning-app.dev"
+                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
+                >
+                  <ExternalLink size={16} />
+                  React
+                </a>
+                <a
+                  href="https://typescript.javascript-learning-app.dev"
+                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
+                >
+                  <ExternalLink size={16} />
+                  TypeScript
+                </a>
                 <button
                   onClick={() => {
                     handleLogout();
