@@ -114,5 +114,37 @@ export function useAuth() {
     if (freshUser) setUser({ ...freshUser });
   }, []);
 
-  return { user, loading, error, signIn, signUp, signOut, refreshUser };
+  const signInWithOAuth = useCallback(async (provider) => {
+    if (!isSupabaseConfigured()) {
+      const msg = "Supabase no está configurado. Revisa las variables de entorno.";
+      setError(msg);
+      return msg;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: typeof window !== "undefined"
+            ? `${window.location.origin}/curso`
+            : undefined,
+        },
+      });
+      setLoading(false);
+      if (error) {
+        const msg = mapAuthError(error.message);
+        setError(msg);
+        return msg;
+      }
+      return null;
+    } catch (e) {
+      setLoading(false);
+      const msg = "Error de red. Comprueba tu conexión a internet.";
+      setError(msg);
+      return msg;
+    }
+  }, []);
+
+  return { user, loading, error, signIn, signUp, signOut, refreshUser, signInWithOAuth };
 }
