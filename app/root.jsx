@@ -8,6 +8,7 @@ import {
 } from "@remix-run/react";
 import "./styles/global.css";
 import { pageMeta, PROJECT_URL } from "./utils/meta";
+import CrossDomainAuth from "./components/CrossDomainAuth";
 
 export const meta = () => {
   return [
@@ -50,6 +51,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-dark-900 text-zinc-100 font-sans antialiased min-h-screen safe-top safe-bottom" suppressHydrationWarning>
+        <CrossDomainAuth />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

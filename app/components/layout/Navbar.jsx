@@ -10,6 +10,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { useProgress } from "../../hooks/useProgress";
 import { useTheme } from "../../hooks/useTheme";
 import { sincronizarProgresoASupabase, limpiarProgresoLocal } from "../../lib/progress";
+import { getAuthRedirectUrl } from "../../lib/auth-bridge";
+import { supabase } from "../../lib/supabase";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -257,27 +259,36 @@ export default function Navbar() {
                       <p className="px-3 py-1.5 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                         Mis Cursos
                       </p>
-                      <a
-                        href="https://javascript-learning-app.dev/curso"
-                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
+                      <button
+                        onClick={async () => {
+                          const url = await getAuthRedirectUrl(supabase, "https://javascript-learning-app.dev/curso");
+                          window.location.href = url;
+                        }}
+                        className="w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
                       >
                         <ExternalLink size={16} className="text-zinc-500" />
                         JavaScript
-                      </a>
-                      <a
-                        href="https://react-learning-app.dev"
-                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
+                      </button>
+                      <button
+                        onClick={async () => {
+                          const url = await getAuthRedirectUrl(supabase, "https://react-learning-app.dev");
+                          window.location.href = url;
+                        }}
+                        className="w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
                       >
                         <ExternalLink size={16} className="text-zinc-500" />
                         React
-                      </a>
-                      <a
-                        href="https://typescript.javascript-learning-app.dev/curso"
-                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
+                      </button>
+                      <button
+                        onClick={async () => {
+                          const url = await getAuthRedirectUrl(supabase, "https://typescript.javascript-learning-app.dev/curso");
+                          window.location.href = url;
+                        }}
+                        className="w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-zinc-100 hover:bg-dark-700/60 transition-colors"
                       >
                         <ExternalLink size={16} className="text-zinc-500" />
                         TypeScript
-                      </a>
+                      </button>
                     </div>
 
                     {/* Logout */}
@@ -415,27 +426,36 @@ export default function Navbar() {
                 <div className="px-4 py-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   Mis Cursos
                 </div>
-                <a
-                  href="https://javascript-learning-app.dev/curso"
-                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
+                <button
+                  onClick={async () => {
+                    const url = await getAuthRedirectUrl(supabase, "https://javascript-learning-app.dev/curso");
+                    window.location.href = url;
+                  }}
+                  className="w-full text-left flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
                 >
                   <ExternalLink size={16} />
                   JavaScript
-                </a>
-                <a
-                  href="https://react-learning-app.dev"
-                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
+                </button>
+                <button
+                  onClick={async () => {
+                    const url = await getAuthRedirectUrl(supabase, "https://react-learning-app.dev");
+                    window.location.href = url;
+                  }}
+                  className="w-full text-left flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
                 >
                   <ExternalLink size={16} />
                   React
-                </a>
-                <a
-                  href="https://typescript.javascript-learning-app.dev/curso"
-                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
+                </button>
+                <button
+                  onClick={async () => {
+                    const url = await getAuthRedirectUrl(supabase, "https://typescript.javascript-learning-app.dev/curso");
+                    window.location.href = url;
+                  }}
+                  className="w-full text-left flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-dark-700/50 transition-colors"
                 >
                   <ExternalLink size={16} />
                   TypeScript
-                </a>
+                </button>
                 <button
                   onClick={() => {
                     handleLogout();
