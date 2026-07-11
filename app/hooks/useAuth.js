@@ -126,10 +126,12 @@ export function useAuth() {
       const redirectTo = typeof window !== "undefined"
         ? `${window.location.origin}/curso`
         : "https://javascript-learning-app.dev/curso";
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log("[OAuth] Redirecting to:", redirectTo);
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: { redirectTo },
       });
+      console.log("[OAuth] Response:", { data, error });
       setLoading(false);
       if (error) {
         const msg = mapAuthError(error.message);
