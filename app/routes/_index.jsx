@@ -7,6 +7,7 @@ import Features from "../components/landing/Features";
 import CourseOutline from "../components/landing/CourseOutline";
 import Resources from "../components/landing/Resources";
 import CTA from "../components/landing/CTA";
+import CourseBundleBanner from "../components/landing/CourseBundleBanner";
 import JsonLd from "../components/JsonLd";
 import { pageMeta, PROJECT_URL } from "../utils/meta";
 
@@ -43,6 +44,7 @@ export default function Index() {
       <AnimatedBackground />
       <div className="relative z-10">
         <Navbar />
+        <CourseBundleBanner currentCourse="js" />
         <main id="main-content">
           <section id="inicio">
             <Hero />
