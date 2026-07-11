@@ -123,13 +123,12 @@ export function useAuth() {
     setLoading(true);
     setError(null);
     try {
+      const redirectTo = typeof window !== "undefined"
+        ? `${window.location.origin}/curso`
+        : "https://javascript-learning-app.dev/curso";
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: {
-          redirectTo: typeof window !== "undefined"
-            ? `${window.location.origin}/curso`
-            : undefined,
-        },
+        options: { redirectTo },
       });
       setLoading(false);
       if (error) {
