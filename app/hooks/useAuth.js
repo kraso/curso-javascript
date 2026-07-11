@@ -123,9 +123,7 @@ export function useAuth() {
     setLoading(true);
     setError(null);
     try {
-      const redirectTo = typeof window !== "undefined"
-        ? `${window.location.origin}/auth/callback`
-        : "https://javascript-learning-app.dev/auth/callback";
+      const redirectTo = "https://javascript-learning-app.dev/auth/callback";
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: { redirectTo },
