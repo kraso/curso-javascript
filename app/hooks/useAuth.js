@@ -35,7 +35,16 @@ export function useAuth() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    const handleSessionSet = (e) => {
+      setUser(e.detail?.user ?? null);
+      setLoading(false);
+    };
+    window.addEventListener('supabase:session-set', handleSessionSet);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('supabase:session-set', handleSessionSet);
+    };
   }, []);
 
   const signIn = useCallback(async (email, password) => {

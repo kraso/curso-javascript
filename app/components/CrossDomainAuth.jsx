@@ -12,7 +12,10 @@ export default function CrossDomainAuth() {
     const refresh_token = params.get('refresh_token');
 
     if (access_token && refresh_token) {
-      supabase.auth.setSession({ access_token, refresh_token }).then(() => {
+      supabase.auth.setSession({ access_token, refresh_token }).then(({ data, error }) => {
+        if (!error && data.session) {
+          window.dispatchEvent(new CustomEvent('supabase:session-set', { detail: data.session }));
+        }
         window.history.replaceState(null, '', window.location.pathname + window.location.search);
       });
     }
