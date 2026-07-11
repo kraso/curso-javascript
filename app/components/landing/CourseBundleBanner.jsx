@@ -43,7 +43,7 @@ export default function CourseBundleBanner({ currentCourse = "js" }) {
 
   return (
     <section className="w-full border-y border-zinc-800/50 bg-dark-800/30">
-      <div className="max-w-6xl mx-auto px-4 py-10 sm:py-12">
+      <div className="max-w-6xl mx-auto px-4 pt-16 pb-10 sm:pt-20 sm:pb-12">
         <p className="text-center text-sm sm:text-base text-zinc-400 mb-8 sm:mb-10">
           <span className="text-zinc-300 font-medium">Una sola cuenta.</span>{" "}
           Tres cursos gratuitos.
